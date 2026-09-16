@@ -1,0 +1,1707 @@
+---
+title: 
+author: 
+output: learnr::tutorial
+runtime: shiny_prerendered
+description: 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(tutorial.storage = list(
+  save_object = function(...) { },
+  get_object = function(...) NULL,
+  get_objects = function(...) list(),
+  remove_all_objects = function(...) { }
+))
+library(learnr)
+```
+
+
+## Topic 1: Introduction to R and RStudio
+
+R is a powerful, free and open-source program for statistical computing. It is 
+fast becoming the standard software for data analysis in the social sciences,
+particularly in political science. Some of its key advantages are:
+
+* It is extremely flexible, almost anything can be done with it.
+* It is free.
+* It is constantly improving. R code now is much more accessible, faster, and 
+powerful than previously.
+* Once you master the basics, it is just a matter of adjusting that code to new data.
+
+These basics are what this course is about. It will introduce you to everything
+you need to know to use R. Once you complete this course, you can build on what 
+you've learned.
+
+## Topic 2: Grammar of R (Operators)
+As any other programming language, R has its own unique grammar. Arguably, the 
+most important part of R is its usage of *verbs*. There are two primary verb 
+groups in R: 
+
+* Operators
+* Functions 
+
+We first dive into operators and consider functions later.
+
+### Operators
+
+Operators are basic verbs in R. They allow you to perform basic operations with 
+data. They are akin to auxiliary verbs in English and can be used on their own 
+or together with more complex functions. There are:
+
+* Arithmetic operators (used to conduct arithmetic operations on data)
+* Logical operators (used primarily for comparisons of data)
+* Assignment operators (used to assign names to existing values)
+
+We now discuss each in turn.
+
+## Topic 2.1: Arithmetic operators
+First, lets look at arithmetic operators. There are 6 primary arithmetic 
+operators. Each of them allows to conduct simple arithmetic tasks such as adding or dividing numbers: 
+
+1. Addition: `+`
+2. Subtraction: `-`
+3. Multiplication: `*`
+4. Division: `/`
+5. Exponentiation: `^`
+6. Modulo (Division with remainder): `%`
+
+For an example, press "Run code" below:
+
+```{r modulo, exercise=TRUE, exercise.lines = 1}
+7 / 5
+
+```
+
+
+#### Exercises for arithmetic operators
+Replace the alphabetic placeholders `a` and `b` below with numbers of your choice.
+
+```{r a_operators, eval = F, exercise=TRUE, exercise.lines = 18}
+# Division
+a/b
+
+# Multiplication
+a*b
+
+# Subtraction
+a-b
+
+# Addition
+a+b
+
+# Exponentiation
+a^b
+
+# Modulo
+a %% b
+
+```
+
+## Topic 2.2: Logical operators
+
+Logical operators are verbs that allow us to realize logical operations. There are 6 logical operators: 
+
+* Less than: `<`
+* Greater than: `>`
+* Less than or equal to: `<=`
+* Greater than or equal to: `>=`
+* Equal: `==`
+* Unequal: `!=`
+
+R indicates the answer to a logical comparison by returning one of two answers:
+`TRUE` or `FALSE`. `TRUE` indicates that the logical statement that you 
+evaluated is true (correct). `FALSE` indicates that the evaluated statement is 
+wrong (not correct). The following piece of code returns FALSE as an answer 
+because 5 is **not** less than 4:
+
+```{r less_than, exercise=TRUE, exercise.lines = 1}
+5 < 4
+
+```
+
+#### Exercise for arithmetic operators
+Replace the alphabetic placeholders `a` and `b` below with numbers of your
+choice and exercise using logical operators.
+
+```{r l_operators, eval = F, exercise=TRUE, exercise.lines = 18}
+# Less than
+a < b
+
+# More than
+a > b
+
+# Less than or equal
+a <= b
+
+# More than or equal
+a >= b
+
+# Equal
+a == b
+
+# Not equal
+a != b
+
+```
+
+## Topic 2.3: Assignment operators
+An assignment operator is a special type of verb. It is akin to the verb 
+**to be**. There are two of them that work in almost the same way:
+
+* `<-`
+* `=`
+
+Both are used to assign a name to a value or a set of values. However, in practice you should **almost always** use `<-`.
+
+With the following code, we tell R that we want to save the number 1791 under the name `start_of_haitian_revolution`:
+
+```r
+start_of_haitian_revolution <- 1791
+```
+
+Here, 1791 refers to the beginning of the Haitian Revolution, when enslaved people and other inhabitants of the French colony of Saint-Domingue rose up against French colonial rule and slavery. The revolution ultimately led to the establishment of the independent state of Haiti in 1804.
+
+The name and the number are stored together in the R environment, which can be understood as the memory you are working with during an R session. Named entities are generally referred to as **objects** in R (more on this later).
+
+Once you have created an object, you can print its value on the screen by typing `start_of_haitian_revolution` in the R console.
+
+By default, you do not see any
+output in the console when creating a new object. If the command works, nothing
+happens in the console and you will only notice that a new object has been 
+added to the R environment.
+
+Here is an example. You can run the code and then type `start_of_haitian_revolution` in the 
+chunk and execute this line to see that you created this object (put the cursor 
+somewhere in the third line and hit Command+Enter on your keyboard).
+
+```{r start-HT, exercise=TRUE, exercise.lines = 4}
+start_of_haitian_revolution <- 1791
+
+start_of_haitian_revolution
+
+```
+
+We now create a second object with the other operator `<-`. The name of the 
+object that you create always has to be on the side of the arrow's head. 
+
+```{r end-HT, exercise=TRUE, exercise.setup = "start-HT", exercise.lines = 3}
+end_of_haitian_revolution <- 1804
+```
+
+In practice, **one always uses the `<-` as an assignment operator in R** for
+reasons we do not need to dig into here. For this reason, we will only use 
+`<-` in the following. *Note*: Functions use  `=` 
+internally instead of `<-`, for example when creating a variable inside a 
+data frame. The assignment operator is superior for creating objects *with*
+a function.
+
+With the objects `start_of_haitian_revolution` and `end_of_haitian_revolution`, you can now calculate the 
+length of the haitian revolution *without* having to create a new object using an 
+assignment operator (just as with an ordinary calculator). 
+
+```{r assign_diff, exercise = TRUE, exercise.setup = "end-HT", exercise.lines = 7}
+start_of_haitian_revolution <- 1791
+end_of_haitian_revolution <- 1804
+
+end_of_haitian_revolution-start_of_haitian_revolution
+```
+
+Now that you know how to create objects, here is some [good coding practice](https://style.tidyverse.org/syntax.html){target="blank"} to follow 
+when naming objects. Usually, you should only use:
+
+- lowercase letters;
+- numbers;
+- underscores (`_`, aka snakecase) 
+
+*If* you want to use a blank space in an object name, you can do it by putting 
+backticks (``) around the object name. Try to avoid this if you can.
+
+```{r object_w_blanks, exercise = TRUE, exercise.setup = "end-HT", exercise.lines = 8}
+start_of_haitian_revolution <- 1791
+end_of_haitian_revolution <- 1804
+
+`duration of Haitian Revolution` <- end_of_haitian_revolution-start_of_haitian_revolution
+
+`duration of Haitian Revolution` 
+```
+
+#### Exercise for assignment operators
+
+In the code below,
+
+1. assign your year of birth to the object `date_of_birth` (you can use a 
+fictional year of birth, if you like).
+2. Calculate your approximate age in years by subtracting `date_of_birth` from the current
+year we have.
+
+```{r create_obj, exercise=TRUE, exercise.lines = 5}
+
+
+
+```
+
+## Topic 3: Grammar of R (Functions)
+
+Functions are similar to verbs and perform an action. The action could be a 
+calculation, the plotting of a graph etc. For example, `sum()` simply adds the 
+numbers that you specify.
+
+```{r sum_func, exercise=TRUE, exercise.lines = 3}
+sum(1, 2)
+
+```
+
+The function adds any number of digits and returns the result of the summation 
+action. In the script below, you can replace the alphabetic placeholders with 
+actual numbers of your own choice:
+
+```{r sum_func_1, eval = F, exercise=TRUE, exercise.lines = 3}
+sum(a, b, c)
+
+```
+
+Every function performs a specific task. Functions always have at least one 
+*argument*, very often more than one. `sum()` has at a minimum two arguments
+because you need at least two numbers for building a sum. In the chunks above, we 
+represented the arguments by the letters `a`, `b` and `c`. You can get an idea 
+about the arguments of a function by typing `help()`, which is a function 
+itself, and include the name of the function *without* brackets 
+(e.g., `help(sum)`). Alternatively, you can type `?sum` to bring up the same page. 
+When you check the help file for `sum()`, you will notice 
+that the only argument are three dots (`...`). The 'Arguments' section of the 
+help file then states that they stand for "numeric or complex or logical vectors".
+
+When you work with functions, you need to keep two things in mind. A function has:
+
+- a prespecified order of arguments;
+- default values for selected arguments (depends on the function)
+
+Let's clarify this with the simple function for rounding decimal places: `round()`. 
+It has two arguments. In this order:
+
+- `x`: The number to be rounded
+- `digits = 0`
+
+Now play around with this function. What is the result when you run this chunk?
+
+```{r default-digits, exercise = TRUE, exercise.lines = 3}
+round(2.654)
+
+```
+
+You get a natural number because the default setting is zero digits. If you want
+it rounded to one decimal place, you need this.
+
+```{r two-digits, exercise = TRUE, exercise.lines = 1}
+round(2.654, digits = 1)
+
+```
+
+You can also write it in these two equivalent ways. In the first line, R takes 
+the numbers and uses them as input for the arguments as they are listed in the 
+help file. The second line *reverses* the order of the arguments. Since we tell 
+R that the first number is the number of digits, the second number, 2.654, is
+automatically taken as the number to be rounded, giving us the same result as 
+the first line.
+
+```{r digits-first, exercise = TRUE, exercise.lines = 3}
+round(2.654, 2)
+
+round(digits = 2, 2.654)
+
+```
+
+It is particularly important to pay attention to the order of arguments and 
+their default values when:
+
+- you are not deeply familiar with a function;
+- the number of arguments is large; 
+- the function is regularly updated by a programmer because the types of 
+arguments, their number and default values might have changed.
+
+## Topic 4: Grammar of R (Data Types, Vectors & Data Frames)
+
+## Topic 4.1: Data Types
+R allows you to process and work with different types of data having different 
+values. These are important types for our purposes:
+
+- **numbers** (also known as **numeric values**)
+- **strings** (also known as **characters**)
+- **logical values**
+- **missing values**
+
+### Numeric values
+Fundamentally important type of values are numbers. (R differentiates between 
+different subtypes of numbers such as *double* and *integer*, which we ignore 
+here). We have worked with numeric values before, for example when creating the 
+object `start_of_haitian_revolution`.
+
+When you want to know of what type an object is, you can use the `class()` 
+function to determine it. 
+
+```{r numbers, exercise=TRUE, exercise.lines = 3}
+start_of_haitian_revolution <- 1791
+
+class(start_of_haitian_revolution)
+
+```
+
+### Strings
+Strings, or character data, are data that is stored as text (individual letters,
+words, sentences, etc.). For example, party labels or city names can be stored 
+as objects in R. Note in the code below that, unlike the numeric values,
+one assigns textual data to an object with the help of quotation marks. 
+Quotation marks are the syntax that makes it clear to R that what comes in them 
+is textual information.
+
+For example, let us save the name of the current UN Secretary General in R:
+
+```{r strings, exercise=TRUE, exercise.lines = 3}
+UN_Gen_Sec = "António Guterres"
+
+UN_Gen_Sec
+
+```
+
+### Logical values
+R can also hold objects that contain logical values, such as `TRUE` or `FALSE`.
+In the code below, for example, we compare two numeric objects and save the
+result as an object that contains a logical value. Notice that the results of 
+comparative operations can be automatically saved as an object:
+
+```{r logicals, exercise=TRUE, exercise.lines = 10}
+large_number <- 21
+low_number <- 1
+
+# compare the values and save the answer
+bigger_number <- large_number < low_number
+
+# check the answer object
+bigger_number
+
+```
+
+### Missing values
+Finally, R has a special way of saving missing values under the label `NA`. 
+`NA` stands for *not available*. For instance, in the code below we assign a 
+missing value to an object about the elections in North Korea.
+
+```{r missing_values, exercise=TRUE, exercise.lines = 3}
+elections_North_Korea <- NA
+
+elections_North_Korea
+
+```
+
+## Topic 4.2: Vectors
+Following the linguistic analogy, R also has nouns. Nouns are formed with 
+letters. There are, unlike in a human language, only 4 types of nouns: 
+**vectors**, **matrices**, **data frames** and **lists**.
+
+In this chapter, we look at vectors and the next will look at data frames. 
+Matrices and lists are much less used and we will leave them aside in this introduction.
+
+### What is a vector?
+A vector is a named object that can contain multiple values of the same type.
+Because there are 4 different values (or letters), there are four types of
+vectors: **string**, **numeric**, **logical** and **missing value** vectors.
+
+Vectors in R are created by using a function called `c()`. `c()` stands for 
+*concatenate* and does exactly that: concatenates several values into a single
+named object. For example, in the code below we concatenate names of the federal states in Germany
+that have federal elections in 2026 into an object 
+called federal_elections_germany:
+
+```{r string_vector, exercise=TRUE, exercise.lines = 5}
+# Creating a string vector
+federal_elections_germany <- c("Baden-Württemberg", "Rheinland-Pfalz", "Sachsen-Anhalt", "Berlin", "Mecklenburg-Vorpommern")
+
+federal_elections_germany
+
+```
+
+Similar to the vector of strings, we easily create a numeric vector with the 
+help of the `c()` function. In the example below, for instance, we create a 
+vector called elections_months that contains the months in which the elections 
+from the exercise above took place. Number `1`indicates that elections took 
+place in January, `2` in February and `3` in March.
+
+```{r numeric_vector, exercise=TRUE, exercise.lines = 5}
+# Creating a numeric vector 
+elections_months <- c(3, 3, 9, 9, 9)
+
+elections_months
+
+```
+
+Lastly, using the same function, we can create logical vectors. For example, let us indicate whether the selected German federal states have a **Landtag**. `TRUE` indicates that a federal state has a Landtag, while `FALSE` indicates that it does not.
+  
+
+```{r logical_vector, exercise=TRUE, exercise.lines = 5}
+# Creating a logical vector
+is_landtag <- c(
+  TRUE,   # Baden-Württemberg
+  TRUE,   # Rheinland-Pfalz
+  TRUE,   # Sachsen-Anhalt
+  FALSE,  # Berlin
+  TRUE    # Mecklenburg-Vorpommern
+)
+
+is_landtag
+
+```
+
+**Naming Vectors**
+We can also name vectors in R. When naming a vector, we assign a ## Naming Vectors
+
+We can also name vectors in R. When naming a vector, we assign a name to each element of the vector. This can be done with the `names()` function.
+
+In the following example, we use the `federal_states` vector to name the elements of the `is_landtag` vector. This allows us to see which value belongs to which federal state.
+
+
+```{r naming_vectors, exercise=TRUE, exercise.lines = 11}
+# Vector of Bundesländer that held elections
+federal_states <- c(
+  "Baden-Württemberg",
+  "Rheinland-Pfalz",
+  "Sachsen-Anhalt",
+  "Berlin",
+  "Mecklenburg-Vorpommern"
+)
+
+# Vector indicating whether the election was for the Landtag or Abgeordnetenhaus
+is_landtag <- c(TRUE, TRUE, TRUE, FALSE, TRUE)
+
+# Naming the is_landtag vektor
+names(is_landtag) <- federal_states
+is_landtag
+```
+
+As you can see in the printout, the vector `is_landtag` now has a federal state name for each of its values. This makes it easier to see which `TRUE` or `FALSE` value belongs to which federal state.
+
+### Vector selection
+
+Sometimes we are only interested in some values that are contained in vectors. 
+This requires that one learns to select a single or multiple values from a 
+vector. There are two types of value selection in R. They are called 
+*selection by position* and *selection by name*. 
+
+When using the approach of selecting by position, we use a numeric index to 
+indicate the value we are interested in selecting. To do so, we place the name 
+of a vector object followed by the square brackets. And inside the square 
+bracket, we locate the index. Using the general_elections vector from the 
+previous exercise, let's select the first and third value in the vector:
+
+```{r selecting_vector_position, exercise=TRUE, exercise.lines = 17}
+# Vector of German federal states
+federal_states <- c(
+  "Baden-Württemberg",
+  "Rheinland-Pfalz",
+  "Sachsen-Anhalt",
+  "Berlin",
+  "Mecklenburg-Vorpommern"
+)
+
+# Vector indicating whether the elections were for the Landtag or the Abgeordnetenhaus
+is_landtag <- c(TRUE, TRUE, TRUE, FALSE, TRUE)
+
+# Naming the is_landtag vector
+names(is_landtag) <- federal_states
+
+# Selecting the first value in a vector
+is_landtag[1]
+
+# Selecting the fourth value in a vector
+is_landtag[4]
+```
+
+Another approach to selecting a value from a vector is to use its name. Similar to the example above, we use square brackets. But instead of using a numeric index, we specify the name of the vector value we want to select. Since names are string values, we need to put them in quotation marks.
+
+For example, let's check whether the elections in **Baden-Württemberg** and **Berlin** were for the Landtag or the Abgeordnetenhaus:
+
+
+```{r selecting_vector_name, exercise=TRUE, exercise.lines = 17}
+# Vector of German federal states
+federal_states <- c(
+  "Baden-Württemberg",
+  "Rheinland-Pfalz",
+  "Sachsen-Anhalt",
+  "Berlin",
+  "Mecklenburg-Vorpommern"
+)
+
+# Vector indicating whether the elections were for the Landtag or the Abgeordnetenhaus
+is_landtag <- c(TRUE, TRUE, TRUE, FALSE, TRUE)
+
+# Naming the is_landtag vector
+names(is_landtag) <- federal_states
+
+# Selecting the value for Baden-Württemberg
+is_landtag["Baden-Württemberg"]
+
+# Selecting the value for Berlin
+is_landtag["Berlin"]
+
+```
+
+## Topic 4.3: Data frames
+Using only vectors to run complex analysis is inefficient. Thus, most of your 
+coursework will involve collection of vectors on the same topic. R stores 
+collections of vectors in several specific forms: matrices or data frames. 
+Matrices and data frames are very similar and we will focus on data frames
+in this chapter.
+
+**1. Definition**  
+A data frame is the most common way of storing information for analysis.
+Strictly speaking, it is a collection of vectors of equal length. Each vector 
+in a data frame usually represents a variable. The length of the vector then is 
+the number of rows, or observations. A data frame can consist of vectors
+representing different data types: numeric, character, logical. Data 
+frames are essential for research. As an example, we will be working with a data 
+frame that has information on parliamentary elections in Europe for the past 20 
+years. 
+
+**2. Creating a data frame**
+
+To understand data frames better, it is helpful to create one by yourselves. 
+As mentioned above, data frames are created from vectors. We have prepared
+several vectors for you to work with: *country_name*, *election_type*,  
+*election_date*, *vote_share*, *party_name*, *left_right*, *seats*. As for
+everything, there is a function that helps to put vectors into a data frame. It is 
+called `data.frame()`. Its arguments, as you might have guessed, are vectors. 
+Let's have a look at the function in more detail:
+
+```{r data_frame_help, exercise=TRUE, exercise.lines = 4}
+# find details of the data.frame() function
+help(data.frame)  
+
+```
+
+As you can see in the arguments section, there are several useful arguments 
+besides the component arguments. For example, the function *row.names*
+allows us to specify whether we need to use one of the columns
+as row names or not. In this case, we don't want this and set this argument to 'NULL'.
+
+```{r creating_data_frames, exercise=TRUE, exercise.lines = 25}
+# Load the individual vectors first
+data("country_name")
+data("election_type")
+data("election_date")
+data("vote_share")
+data("party_name")
+data("left_right")
+data("seats")
+
+# Creating a data frames called elections
+elections <- data.frame(country_name, election_type,
+                           election_date, vote_share,
+                           party_name, left_right, 
+                           seats, 
+                           row.names = NULL)
+
+head(elections)
+
+```
+
+**3. Looking at the dimensions of a data frame**
+
+With `data()` you can load a data frame. It needs to be saved in the same folder as your R script.
+After creating a data frame, or importing it from another source, it is 
+important to understand how it looks. There are several functions that can help 
+with it. First of all, one can see how many rows and columns a data frame 
+has with the `dim()`, `nrow()`, `ncol()` functions. One can also look up the names 
+of both rows and columns of a data frame with the help of `rownames()` and 
+`colnames()`. For example, let's investigate the cabinet data frame: 
+
+```{r df_dims, exercise=TRUE, exercise.lines = 13}
+# loading the data frame
+data("cabinet")
+
+# Dimensions of the data
+dim(cabinet)
+nrow(cabinet)
+ncol(cabinet)
+
+# Names 
+colnames(cabinet)
+
+```
+
+Find the dimensions of the elections data frame you have created before in the space below. And 
+answer the questions that follow.
+
+```{r df_dims_task, exercise=TRUE, exercise.lines = 5}
+data("elections")
+# Dimensions
+dim(elections)
+# Names
+
+```
+
+**Assignment: dimensions of a data frame**
+```{r quiz_df_dims, echo=FALSE}
+quiz(
+  question("How many Rows and Columns are in the elections data frame?",
+    answer("8673 columns and 7 rows", correct = FALSE),
+    answer("86 columns and 48 rows", correct = FALSE),
+    answer("7 columns and 8673 rows", correct = TRUE),
+    answer("8673 observations and 7 rows", correct = FALSE)
+  ))
+```
+
+Understanding dimensions, however, is usually not enough. When deciding on the type 
+of analysis we want to conduct, it is important to 
+understand the types of data that are contained in a data frame. To see more
+detailed information on the variables in a data frame, we can use the `str()` 
+function. This function displays the structure of the data frame with variables,
+their types as well as a brief view of those variables: 
+
+```{r df_str, exercise=TRUE, exercise.lines = 3}
+data("cabinet")
+# Investigating the structure of the data frames
+str(cabinet)
+```
+
+Now, investigate the structure of the elections data frame in the space 
+below and answer the following question:
+
+```{r df_stud_str, exercise=TRUE, exercise.lines = 3}
+data("elections")
+# Investigating the structure of elections_eu
+str(elections)
+```
+
+**Assignment: dimensions of a data frame**
+```{r quiz_df_str, echo=FALSE}
+quiz(
+  question("Which of the following conclusions about your data is correct?",
+    answer("There are 3 string (character) variables, 3 numeric variables and 1 variable with dates", correct = TRUE),
+    answer("The data frame contains only numeric and string variables", correct = FALSE),
+    answer("There are 4 numeric and 3 string variables", correct = FALSE),
+    answer("There are 7 observations of 8673 variables", correct = FALSE)
+  ))
+```
+
+Additionally, we can also just look at the first and last several observations 
+of a data frame with the help of two functions called `head()` and `tail()`:
+
+```{r df_ht, exercise=TRUE, exercise.lines = 8}
+data("cabinet")
+# Investigating the top and bottom observations
+head(cabinet)
+tail(cabinet)
+```
+
+Lastly, we can view even more detailed information about each variable in a
+data frame with the help of the `summary()` function. This function provides 
+summary statisitcs about each variable in a data frame. For example:
+
+```{r df_summary, exercise=TRUE, exercise.lines = 3}
+data("cabinet")
+# Summary of the data
+summary(cabinet)
+```
+
+**4. Rows and columns in a data frame: selecting, replacing, renaming and adding values**
+
+We often need to select specific values of a 
+data frame. The logic and syntax of selecting elements from data frames are
+similar to the logic we used with vectors. We can use square brackets
+to select single or several elements from a data frame. And most importantly,
+just as with vectors we can use  *selection by position* and *selection by name* 
+methods. 
+
+There is one difference though: Since data frames are multidimensional - 
+they consist of rows and columns
+- we have to account for that. The convention to separate rows from columns is 
+to use a comma. The following grammar is fundamentally important to both 
+understand and memorize `df[row, column]`. As you can see after specifying our 
+data frame, we use the space before comma to specify rows and the space after 
+the comma to specify columns. Let's see how that works with one of our datasets.
+We first select the first row and second column in their entirety. Afterwards, 
+we look at the value in the first row and second column of the data:
+
+```{r df_rc1, exercise=TRUE, exercise.lines = 13}
+data("cabinet")
+# selecting the first row
+cabinet[1, ]
+
+# selecting the second column
+cabinet[, 2]
+
+# selecting the value in the first row and second column
+cabinet[1, 2]
+```
+
+Now test your understanding in the following snippet. Select the value which is 
+located in the tenth row and third column of the cabinet dataset: 
+
+```{r df_rc_e1, exercise=TRUE, exercise.lines = 4}
+data("cabinet")
+
+
+```
+
+Columns are the variables we are investigating. 
+We can also select them with the *selection by name* method. And as always, when using 
+names - or string data for elements of a data frame - they have to be specified 
+within quotation marks:
+
+```{r df_rc2, exercise=TRUE, exercise.lines = 4}
+data("cabinet")
+# selecting the first column
+cabinet["country_name"]
+```
+
+For columns, we can also use a dollar sign `$` instead of the square brackets. 
+You will see this a lot in code, given that it saves a litte bit of code. The result
+is exactly the same, just formatted a little different in the output.
+
+```{r df_rc3, exercise=TRUE, exercise.lines = 4}
+data("cabinet")
+# selecting the first column
+cabinet$country_name
+```
+
+Using *selection by name*, select the column from the data frame which specifies
+the number of seats in the cabinet data frame: 
+Remember that with `colnames()` you can have a look at the names of the variables. 
+
+```{r df_rc_e2, exercise=TRUE, exercise.lines = 4}
+data("cabinet")
+
+
+```
+
+**5. Selecting multiple values at a time**
+
+Most of the times when conducting an analysis, we are interested in looking at 
+several values. We can do this similarly to single values, but then need to 
+specify in a vector form numeric values for rows and columns we are interested 
+in. For instance, in the snippet below, we want to see the first and
+seventh rows as well as the third and fourth columns. We first select rows and
+columns separately. In the last stage, we select the specified rows and columns
+together. Pay attention to the fact that when we specify columns, R delivers the
+specified columns while returning all rows. Similar logic applies to the
+selection of rows. Selected rows are delivered together with all columns. That
+is, if we do not specify a column **AND** a row, R assumes that we want to see every 
+row, or every column.
+
+```{r df_rc365467, exercise=TRUE, exercise.lines = 13}
+data("cabinet")
+# selecting the first and seventh rows
+cabinet[c(1, 7),]
+
+# selecting third and fourth columns
+cabinet[, c(3, 4)]
+
+# selecting the values which are located in rows 1 and 7, and columns 3 and 4
+cabinet[c(1, 7), c(3, 4)]
+```
+
+In the following snippet, select (1) 8th and 9th rows, (2) 13th and 14th 
+columns, and (3) then select the specified rows and columns from the previous 
+steps at once:
+```{r df_rc_e3, exercise=TRUE, exercise.lines = 10}
+data("cabinet")
+
+
+```
+
+In the section above, we learned how to select two rows or columns at a time. 
+Sometimes, we need to select several values that are sequential. There is a 
+special trick in R when it comes to selecting a sequence of values. For example, 
+imagine that we want to look up all the columns starting from the 3rd till 11th.
+To do that, instead of listing all of the columns, we use semicolons to tell R
+that we want to select all the columns from a particular starting point to a 
+particular ending point. Let's do exactly that with our data. In the example
+below, we first select all columns between the 3rd and 11th columns as well as 
+all rows between the 1st and 15th rows. Afterwards, we combine the row and 
+column selection together. Pay attention to the fact that both the starting and
+ending values are included in the resulting selection data. 
+
+```{r df_rc4, exercise=TRUE, exercise.lines = 10}
+data("cabinet")
+# selecting columns starting from 3 to 11
+cabinet[, 3:11]
+
+# selecting rows from 1 till 15
+cabinet[1:15, ]
+
+# selecting rows 1:15 and col 3:11 at once
+
+cabinet[1:15, 3:11]
+```
+
+In the following space, select (1) columns starting from 12th to 19th, (2)
+rows starting from 1000th to 1050th and (3) values that correspond to the 
+specifications in steps 1 and 2 at once. Also feel free to play around with
+additional code
+
+```{r df_rc_e4, exercise=TRUE, exercise.lines = 11}
+data("cabinet")
+
+
+```
+
+An intermission quiz. We have a data frame called `data`. Which of the
+selection grammar correct?
+
+```{r quiz_intermission, echo=FALSE}
+quiz(
+  question("Which of the following selection methods is correct?",
+    answer("data['row number', 'column number']"),
+    answer("data['column number', 'row number']"),
+    answer("data[row number, column number]", correct = TRUE),
+    answer("data['column name', 'row name']"),
+    answer("data['row name', 'column name']", correct = TRUE),
+    answer("data[data$column, data$row]")
+  ))
+```
+
+**6. Adding information to a data frame**
+
+Once we can select values in data frames, adding information becomes easy. 
+Imagine, for example, that the number of seats for Australian elections in the 
+first 5 rows was recorded incorrectly. All the 5 first rows for that column 
+should have a value of 13. To replace the values, we need to combine all the
+elements of value selection we learned above into a single line of code. 
+First, we specify the data frame's name, then the column we are interested in 
+and then we select the sequence of values and then assign the proper value to
+the selection. Here is how we can replace it:
+
+
+```{r df_ai1, exercise=TRUE, exercise.lines = 4}
+data("cabinet")
+# replacing a sequence of values in a column
+cabinet$seats[c(1:5)] <- 13
+
+```
+
+Now, let's imagine that the values for 1st and 5th rows of the seats column 
+needs to be replaced by 10. We can use the same logic as above to do so:
+
+```{r df_ai2, exercise=TRUE, exercise.lines = 4}
+data("cabinet")
+#replacing the 1st and 5th row values
+cabinet$seats[c(1,5)] <- 10
+
+```
+
+In the following snippet, (1) replace the values in rows 9-15 of the column 
+'seats' with a number 14 and (2) replace the first five values of the 
+`election_seats_total` column with a number 80
+
+```{r df_ai_e1, exercise=TRUE, exercise.lines = 11}
+data("cabinet")
+
+
+```
+
+**7. Adding columns and rows, as well as renaming them**
+
+Let's start with renaming. There are special functions that help to name both 
+columns and rows: `colnames()`, `row.names()`. For both functions, we have to 
+specify the data frame and the column number, and then assign a new name. For
+example, let's rename `election_seats_total` which is the 10th column to 
+`total_seats`:
+
+```{r df_crn2, exercise=TRUE, exercise.lines = 4}
+data("cabinet")
+# rename the column 
+colnames(cabinet)[10] <- "total_seats"
+head(cabinet)
+
+```
+
+In the space provided below, rename the column `country_name` to 
+`country_name_long`.
+
+```{r df_crn4, exercise=TRUE, exercise.lines = 4}
+data("cabinet")
+
+
+
+```
+
+**8. Adding entire columns and rows to a data frame.** 
+
+Adding columns to existing data frame is easy if we pay attention to one 
+detail: the length of the vector that we are trying to add as a new column 
+should be equal to the length of the data frame. There are two ways of adding 
+a column. We explore both in the snippet below. 
+
+Our cabinet data frame's length is 12085. That is there are 12085 row values for
+each variable, or column. Let's add a vector of that length as a column to our 
+data frame. We will create a simple numeric vector of length 12085 as an example. 
+
+The same vector will then be added first by using the assignment operator. And 
+then using a special function called `cbind()`. `cbind()` stands for column 
+bind. `cbind()` binds two objects by column. In 
+the example below, we are binding a vector `fictional_vector` to our `cabinet` 
+data frame. We could have used `cbind()` to bind an entire new data frame to
+the `cabinet` (*again paying attention to the fact that both of the data frames
+should have then the same length, or number of rows*).
+
+```{r df_crn5, exercise=TRUE, exercise.lines = 12}
+data("cabinet")
+dim(cabinet)
+
+# create a numeric column
+fictional_vector <- c(1:12085)
+
+# add the column to the data frame
+cabinet$added_vector <- fictional_vector
+
+# another way of adding a column
+cabinet_added <- cbind(cabinet, fictional_vector)
+head(cabinet_added)
+
+```
+
+Similarly, rows can be added to a data frame. Usually, large data frames contain 
+a lot of columns that adding row information becomes tedious with the assignment 
+operator method. Thus, it is recommended to use the `rbind()` function to add 
+rows. This function is a twin of the `cbind()` but instead of binding data 
+objects by columns, it binds them by row. Once again, the vector we are adding 
+as a row should contain values for each of the corresponding columns. 
+
+We are going back to the elections data frame we worked on before. 
+First, check how many columns it has now:
+
+```{r df_crn7, eval = F, exercise=TRUE, exercise.lines = 11}
+data("elections")
+ncol(elections)
+
+```
+
+Looks like it's seven. We therefore need to create a vector that has seven values.
+This new vector is a fictional party in a fictional election. We then add that 
+vector to the elections data frame.
+
+```{r df_crn7667788990, eval = F, exercise=TRUE, exercise.lines = 11}
+data("elections")
+# create new fictional election
+fict_election <- c("Cologne","city","2023-10-04",100,"Carnival party",NA,100)
+
+# add fictional election to the election data frame
+elections <- rbind(elections,fict_election)
+
+# inspect the new end of the data frame
+tail(elections)
+
+```
+
+In a similar vein, add a new fictional election result in your home town, with a 
+made-up party and election date.
+
+```{r df_crn8, exercise=TRUE, exercise.lines = 11}
+data("elections")
+
+
+```
+
+## Topic 5: Packages
+
+Packages are akin to books that are specific to a field. Packages consist of functions (verbs) that perform specific tasks. For instance, there are packages that provide functions for regression analysis, data visualization, or organizing and cleaning data. These field-specific packages are available from repositories such as [CRAN](https://cran.r-project.org/).
+
+When using packages in R, we have to remember two important things. First, we have to install a package before we can use it. This is done with the special function `install.packages("package name")`. Notice that the name of the package is written in quotation marks. In the example below, the installation commands are commented out (the line starts with a `#`), which means that they will not be evaluated. This is because the packages have already been installed as part of the tutorial setup.
+
+```{r pack_ins1, eval = F, exercise=TRUE, exercise.lines = 7}
+# Example of installing a package
+# install.packages("ggplot2") # ggplot2 is a package for data visualization
+
+# Installing the gerda package
+# install.packages("gerda")
+```
+
+
+The second important point is that installing a package and using a package are two different things. After a package has been installed, we still need to load it into our current R session. To do this, we use the `library()` function. Unlike `install.packages()`, we do not use quotation marks around the package name when using `library()`.
+
+For example, the following code loads the packages we need for the example below:
+
+```{r pack_ins2}
+library(gerda)
+library(ggplot2)
+
+```
+
+The `gerda` package provides access to the German Election Database (GERDA), which contains harmonized and unharmonized election data for German elections. In this example, we use the unharmonized federal election data at the constituency level.
+
+Before working with the data, we can use `gerda_data_list()` to see which datasets are available through the package:
+
+```{r pack_ins3}
+gerda_data_list()
+```
+
+We then use `load_gerda_web()` to load the federal election data. The name of the dataset is provided as a character string:
+
+```{r pack_ins4}
+library(dplyr)
+library(tidyr)
+
+DE <- load_gerda_web(
+  "federal_wkr_unharm",
+  file_format = "rds"
+)
+```
+
+The resulting data frame contains information on the German federal elections at the constituency level. Among other variables, it includes the election year, constituency, whether the observation refers to the first or second vote, and the vote share of individual parties.
+
+For our example, we are interested in the 2025 Bundestag election and in the second votes. We therefore use `filter()` to select these observations:
+
+```{r pack_ins5}
+DE_2025 <- DE %>% 
+  filter(
+    election_year == 2025,
+    stimme == "zweitstimme"
+  )
+```
+
+We can now summarize the data to calculate the mean second-vote share for each of the selected parties across constituencies. We then reshape the data from a wide format into a long format, which makes it easier to use with `ggplot2`.
+
+You do **not** need to understand all of this code yet. We will learn how to summarize and reshape data in more detail later in the course. For now, the important point is to see how these steps can be combined to prepare data for a visualization.
+
+```{r pack_ins6}
+party_means <- DE_2025 %>% 
+  summarise(
+    `CDU/CSU` = mean(cdu_csu, na.rm = TRUE),
+    SPD = mean(spd, na.rm = TRUE),
+    AfD = mean(afd, na.rm = TRUE),
+    GRÜNE = mean(gruene, na.rm = TRUE),
+    LINKE = mean(linke_pds, na.rm = TRUE)
+  ) %>% 
+  pivot_longer(
+    cols = everything(),
+    names_to = "party",
+    values_to = "vote_share"
+  )
+```
+
+We can now use this summary data to create a barplot with `ggplot2`. The bars show the mean second-vote share across constituencies for each party. The `fill` aesthetic allows us to assign a different color to each party, while `scale_fill_manual()` lets us specify the colors ourselves.
+
+```{r plot5.1}
+ggplot(
+  party_means,
+  aes(
+    x = reorder(party, vote_share),
+    y = vote_share,
+    fill = party
+  )
+) +
+  geom_col() +
+  scale_fill_manual(
+    values = c(
+      "CDU/CSU" = "#000000",
+      "SPD" = "#E3000F",
+      "AfD" = "#009EE0",
+      "GRÜNE" = "#64B82A",
+      "LINKE" = "#BE3075"
+    )
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    y = "Mean second-vote share",
+    x = "Party",
+    title = "2025 Bundestag Election",
+    subtitle = "Mean second-vote share across constituencies"
+  ) +
+  theme_bw() +
+  theme(
+    legend.position = "none"
+  )
+```
+
+The following code is an example of what packages can do. **Please do not try to memorize the code.** There is a separate module on data visualization within your program that covers `ggplot2` and its functions in much more detail.
+
+For now, the important point is to recognize how different packages can work together: `gerda` provides access to election data, `dplyr` helps us manipulate and summarize the data, `tidyr` helps us reshape the data, and `ggplot2` is used to create the visualization. In the following chapter, we will take a closer look at how dplyr works. 
+
+## Topic 6: Tidy Data & Data manipulation
+
+### Introducing dplyr
+
+This chapter is about a special package called `dplyr`. It is a package that 
+specializes in helping us to  manipulate data (subset, select, filter and many
+more functions). The package provides functions that make working with data frames
+easier and more intuitive as compared to the basic R approach (which we have 
+covered in the chapter on data frames). On the official 
+[website](https://dplyr.tidyverse.org/) of the package, it is referred to as a
+package that provides "a consistent set of verbs that help you solve the most 
+common data manipulation challenges". 
+
+In this chapter of the module, we are going to cover the five most important 
+functions within the dplyr package. These functions will be useful for all of 
+the modules available to you in this program and data manipulation within R in
+general. 
+
+Let's start by installing and loading the package:
+
+```{r dplyr1, eval = F,  exercise=TRUE, exercise.lines = 7}
+# install the package
+# install.packages("dplyr")
+
+# load the package 
+library(dplyr)
+```
+
+### The five main functions of dplyr: select(), filter(), arrange(), mutate(), summarize()
+
+**7.1: select() for columns**
+
+The first of the functions we cover is `select()`. `select()` is a function that allows 
+us to select a variable from a data frame. This is an alternative to the 
+selection we learned in the chapter on data frame manipulation. The function 
+allows to select one or more variables at a time. 
+
+The `select()` function has two important arguments: a data frame and the name, 
+or names, of columns we are interested in selecting. In the example below, let's 
+select the `seats` variable from the `cabinet` data frame. We can specify that 
+`cabinet` is our data frame by explicitly assigning it to the `.data` argument 
+within the `select()` function. This is not mandatory, however. `Dplyr` knows that 
+the first object inside the brackets is a data frame on its own (see the second 
+example in the code snippet). Pay attention to the fact that we do not have to 
+use the quotation marks when selecting a column with `dplyr` functions:
+
+
+```{r dplyr2, exercise=TRUE, exercise.lines = 5}
+data("cabinet")
+# selecting a single variable
+select(.data = cabinet, seats)
+
+# selecting without specifying the data explicitly
+select(cabinet, seats)
+```
+
+Now, we can also select multiple variables (or columns) at once with the help
+of the `select()` function. In addition to the seats variable, let's select the variable 
+called `election_date` and assign the selection to a new data frame called 
+`cabinet_subset`:
+
+```{r dplyr3, exercise=TRUE, exercise.lines = 3}
+data("cabinet")
+# selecting a single variable
+cabinet_subset <- select(.data = cabinet, seats, election_date)
+
+```
+
+**Exercise**
+In the space below, exercise your knowledge of the `select()` function by 
+selecting the variables called `seats`, `election_date`, and `country_name`.
+Do not forget to assign the selection to a new data frame called `cabinet_sub`.
+We will use the created subset in the end of the chapter to create a chart. 
+
+```{r dplyr4, exercise=TRUE, exercise.lines = 3}
+data("cabinet")
+# selecting and assign
+
+
+```
+
+**7.2: filter() for rows**
+
+Now, `select()` is very useful for working with columns or variables of a 
+data frame. As you might remember from the earlier chapters, however, we 
+sometimes need to subset data frames based on the row values. `dplyr` has a 
+special function that allows us to easier subset the data based on the row 
+values as well. It is called `filter()`. 
+
+**Filtering for numeric columns**
+Similar to `select()`, the first argument for `filter()` is the data frame.
+The next argument, however, is the name of a variable followed by the row 
+value we are interested in selecting. As an example, let's create a subset of 
+the `cabinet` so that it only includes all the data for a single election
+year: 2017. Date information is stored in the column called `year`. So, let's 
+filter for the value `2017` in the column `year`, and save the subset in a new 
+data frame called `cabinets_2017`: 
+
+```{r dplyr5, exercise=TRUE, exercise.lines = 5}
+data("cabinet")
+# filtering for 2017
+cabinets_2017 <- filter(cabinet, year == 2017)
+head(cabinets_2017)
+```
+
+**Filtering for string columns**
+As you might have noticed, the grammar (arguments) of `filter()` is quiet 
+similar to `select()`. It becomes a bit different, however, when we want to 
+subset the data based on the values of a string variable. Namely, when selecting
+text data, the values we are interested in filtering on needs to be included in 
+quotation marks. Let's, see an applied example by subsetting the cabinet
+data frame first for year `2017`. In addition to selecting the year, let's also 
+filter for a single country: Germany. Country information is stored in the 
+column `country_name`, and the value we are interested in is `Germany`. We will
+save the subsetted data in a new data frame called `cabinet_DE_2017`:
+
+```{r dplyr6, exercise=TRUE, exercise.lines = 5}
+data("cabinet")
+# filtering for Germany
+cabinet_DE_2017 <- filter(cabinet, year == 2017, country_name == "Germany")
+head(cabinet_DE_2017)
+```
+
+**Filter assignment**
+To practice your filtering skills, create a new data frame in the chunk below 
+called `cabinet_AUS_2001` which includes the subset of the `cabinet` data for 
+Australian cabinet of 2001.
+
+```{r dplyr7, exercise=TRUE, exercise.lines = 3}
+data("cabinet")
+# filtering Australia in 2001
+
+```
+
+**7.3: arrange()**
+
+One of the most simple functions in `dplyr` package is called arrange.
+It is a function that becomes extremely useful for cases when the data we work 
+with comes in an unordered manner. The function allows to arrange an entire 
+data frame based on the values of a single column. The direction of the
+arrangement can be specified with an additional argument that allows us to
+indicate whether we want to arrange the data in ascending or descending order.
+
+As an example, let's arrange the cabinet data frame based on the values of seats.
+In the example below we will (1) first subset the data such that only 
+`country_name`, `year`, `party_name_english` and `seats` variables are *selected*
+and (2) secondly we will *filter* the data to only include values for Bulgaria. 
+Let's name the subset data BG_subset. 
+
+```{r dplyr8, exercise=TRUE, exercise.lines = 7}
+data("cabinet")
+BG_subset <- select(cabinet,country_name, year, party_name_english, seats)
+BG_subset <- filter(BG_subset,country_name == "Bulgaria")
+head(BG_subset)
+```
+
+As you can see in the subset, the data seems to be ordered by the year of 
+election. This data can be easily reordered based on the values of the
+`party_name` variable with the `arrange()` function as follows:
+
+```{r dplyr9, exercise=TRUE, exercise.lines = 7}
+data("cabinet")
+BG_subset <- filter(cabinet,country_name == "Bulgaria")
+BG_subset <- select(BG_subset,country_name, year, party_name_english, seats)
+
+# arranging by party name
+arrange(BG_subset, party_name_english)
+```
+
+The re-arranged data now is ordered by the party name. Since we are arranging by the
+string variable, the data is arranged alphabetically. If we want to look at the 
+data in the reverse order, we only need to add an internal function of the 
+`arrange()` called `desc()`. We need to simply include the name of the variable
+by which we are arranging in the `desc()` function. It is important to remember
+that `desc()` is an internal function of the `dplyr` function. *Thus, it will
+not work in other contexts.* Let's see the application with 
+the previous example:
+
+```{r dplyr10, exercise=TRUE, exercise.lines = 7}
+data("cabinet")
+BG_subset <- filter(cabinet,country_name == "Bulgaria")
+BG_subset <- select(BG_subset,country_name, year, party_name_english, seats)
+
+# arranging by party name
+arrange(BG_subset, desc(party_name_english))
+```
+
+Pay attention to the fact that while the resulting data is arranged by the
+name of the party, the year column is not arranged (that is there is no
+descending or ascending order according to the year).
+
+Finally, the beauty of `arrange()` is that it allows for ordering the data 
+based on values of several columns. Imagine, for example, that we want to 
+arrange our subset data based on two variables: party name and year. Once we 
+run the code below, we can see that the data is first arranged by the party name 
+alphabetically and then by year in chronological order
+
+
+```{r dplyr11, exercise=TRUE, exercise.lines = 7}
+data("cabinet")
+BG_subset <- filter(cabinet,country_name == "Bulgaria")
+BG_subset <- select(BG_subset,country_name, year, party_name_english, seats)
+
+# arranging by party name and reverse chronologically
+arrange(BG_subset, party_name_english, year)
+```
+
+**Exercise for `arrange()`**
+
+In the space below, filter the `cabinet` data for values of Germany only. Then
+select the variables: `party_name_english`, `year`, and `seats`. Name the
+subset `DE_cabinet` and arrange the data by the number of seats and party name.
+The data should be arranged such that the parties with the highest number of 
+seats are presented.
+
+```{r dplyr12, exercise=TRUE, exercise.lines = 15}
+data("cabinet")
+
+
+
+```
+
+**7.4: group_by() and summarize()**
+
+The penultimate function we cover in this section is the `summarise()` from
+`dplyr`. This function is useful for deriving summary data for a data frame. 
+Usually, the function is used in combination with functions that provide summary 
+statistics, such as the `mean()` for finding the average, `min()` or `max()`for 
+finding the minimum or maximum, and others.  Similar to other `dplyr` functions,
+summarize requires the naming of the dataset as a first argument. And as a 
+second argument, it takes in a function which helps us calculate the summary 
+statistics we are interested in together with a variable for which the summary 
+statistic is required. Let's calculate the average number of seats in our 
+`cabinet` data as an example: 
+
+```{r dplyr13, exercise=TRUE, exercise.lines = 7}
+data("cabinet")
+# calculate the mean number of seats in our cabinet data
+summarise(cabinet, mean(seats))
+```
+
+While this is useful, you might wonder why we need to use summarize in the 
+first place. Since, we could have calculated the mean for seats of the cabinet 
+data in a simpler way by simply including the seats column inside the `mean()` 
+function:
+
+```{r dplyr14, exercise=TRUE, exercise.lines = 7}
+data("cabinet")
+# simpler way of finding the average
+mean(cabinet$seats)
+```
+
+The `summarise()` function's actual usefulness 
+arises when we want to see summary statistics based on some sort of grouping.
+Imagine, for example, that we want the same average number of seats but for each
+country. If we followed the base R, we would have to first create a subset for 
+each country of our data frame and then use the `mean()` function with each of
+the subsets. As a glimpse to how it would look like, let's create such subsets
+for the first three countries (Australia, Austria and Belgium) and calculate the 
+mean with base R:
+
+```{r dplyr15, exercise=TRUE, exercise.lines = 20}
+data("cabinet")
+# Subsets
+# subset for Australia
+AU_subset <- cabinet[cabinet$country_name == "Australia",]
+
+# Subset for Austria
+AT_subset <- cabinet[cabinet$country_name == "Austria",]
+
+# Subset for Belgium
+BE_subset <- cabinet[cabinet$country_name == "Belgium",]
+
+# Averages 
+mean(AU_subset$seats)
+mean(AT_subset$seats)
+mean(BE_subset$seats)
+
+```
+
+Given that our data contains 37 countries, the seemingly simple tasks becomes 
+very repetitive which leads to errors. To calculate the mean for 
+each of the countries in this example, we would have to create 37 subsets and 
+calculate 37 means (which would result in 74 lines of code). This is where
+`summarise()` in combination with another `dplyr` function called `group_by()` 
+becomes really useful. The ability to combine these two functions is much more efficient, 
+as we only need to write a relatively
+short piece of code. 
+
+Before moving on to combining the two functions, let's first have a more 
+detailed look at the `group_by()`. This is another function that is internal 
+to `dplyr` similar to `desc()` that we have covered above. `group_by()` only 
+makes sense within the `dplyr` environment and it groups the data
+based on a certain column. It is important to know that nothing in the data frame 
+changes when we apply the `group_by()` on its own. See below, for instance:
+
+```{r dplyr16, exercise=TRUE, exercise.lines = 5}
+data("cabinet")
+# group_by introduction
+group_by(cabinet, country_name)
+
+```
+
+The only thing that happens is that dplyr tells R to treat the `cabinet` data as 
+grouped by `country_name` column internally. This internal functionality becomes 
+useful when we want to see summary statistics for data that is grouped by values 
+of that column. That is, let's group the `cabinet` data by `country_name` again.
+And then calculate the average `seats` for the grouped data: 
+
+```{r dplyr17, exercise=TRUE, exercise.lines = 7}
+data("cabinet")
+# group_by icountry
+grouped_cabinet <- group_by(cabinet, country_name)
+
+# calculate the mean for grouped data
+summarise(grouped_cabinet, mean(seats))
+```
+
+As you can see, this code provides us with the mean number of seats 
+for each country in our dataset. This is so because we grouped by country and
+then calculated the mean. We have reduced the potential 74 lines of code to two 
+lines.
+
+Lastly, `group_by()` allows to group the data by several variables. This further 
+leads to an opportunity to get even more detailed summary view of the data. As
+an example, let's group the `cabinet` data not only by country but also by 
+election year. 
+
+```{r dplyr18, exercise=TRUE, exercise.lines = 7}
+data("cabinet")
+# grouping by country, year
+grouped_cabinet <- group_by(cabinet, country_name, year)
+
+# calculate the mean for grouped data
+summarise(grouped_cabinet, mean(seats))
+
+```
+
+Because we first grouped the data by country and then by year, as you can see,
+we could obtain the mean seats for each country for each year!
+
+**group_by and summarize exercises** 
+In the space below, calculate (1) the average seats occupied by each party 
+within each country; (2) next calculate the average seats for each party per 
+year. Save the results of the calculation in a new data frame. You can choose 
+the names for each of the resulting data yourself.
+
+
+```{r dplyr19, exercise=TRUE, exercise.lines = 13}
+data("cabinet")
+
+
+
+```
+
+
+**7.5: mutate() for creating new values**
+
+Finally, we are covering the last function of the `dplyr` package within this
+module. The function is called `mutate()`. It is the only function in the
+package that allows us to create and simultaneously add a totally new variable 
+to the data frame we are working with.
+
+As a case, let's calculate the proportion of seats gained by a single party in
+an election year in relation to the total number of seats in that year. To achieve the task,
+we will first do some subsetting with the functions we have learned in the
+previous step. First of all, let's only select the variables that are needed for 
+this task: `country_name`, `party_name_english`, `year`, `seats`, and 
+`election_seats_total`. Secondly, since we want to derive the data per party per
+year, let's do the needed grouping of the data:
+
+
+```{r dplyr20, exercise=TRUE, eval = F, exercise.lines = 23}
+data("cabinet")
+
+# Subset the data first
+cabinet_subset <- select(cabinet, country_name, party_name_english, 
+                         year, seats, election_seats_total)
+
+# Group the data
+cabinet_group <- group_by(cabinet_subset, party_name_english, year)
+
+# Investigating the data
+head(cabinet_group)
+
+```
+
+Notice that the subset and grouped data has 5 columns that we have selected 
+and is grouped by party names and election year. 
+
+Next to calculate the proportion, we employ the `mutate()` function. Similar 
+to the rest of `dplyr` functions, the first argument of `mutate()` is the 
+data frame we are working on. The second argument of `mutate()` is the name of 
+the variable we want to create. Since we are calculating the proportion of 
+seats, we will call our variable `seat_proportion`. Following the name of the
+new variable we want, we have to write the formula that we employ to calculate 
+the value. To find the proportion of seats in our case, we divide the `seats` 
+column by the `election_seats_total` column. Here is how it all looks in code:
+
+
+```{r dplyr21, eval = F, exercise=TRUE, exercise.lines = 7}
+data("cabinet")
+# Subset the data first
+cabinet_subset <- select(cabinet, country_name, party_name_english, 
+                         year, seats, election_seats_total)
+
+# Group the data
+cabinet_group <- group_by(cabinet_subset, party_name_english, year)
+
+# mutating the data
+cabinet_mutated <- mutate(cabinet_group, seat_proportion = seats/election_seats_total)
+
+tail(cabinet_mutated,20)
+
+```
+
+
+**Assignment for mutate** 
+
+To exercise your skills at mutating a dataset, create two new variables based 
+on the `seats` column of the `cabinet` dataset in the space provided below. The 
+first variable, called `difference` should be the difference between the
+mean seat number per country, per election year and the individual seat number 
+gained by each party in that year. For this, you have to group the `cabinet` dataset
+by `country_name` and `election_date`. Then you create a new variable with the mean for each election
+and then deduct the individual seat numbers from that number. 
+The second variable called `squared.diff` should equal to the square of the variable 
+you have created in the previous step.
+
+```{r dplyr22, exercise=TRUE, exercise.lines = 15}
+data("cabinet")
+
+
+```
+
+
+Congratulations! If you made it until here, you have mastered foundational skills needed to work on data-related assignments. 
+
+## Topic 7: Advanced tidy: the pipe operator
+
+This section is meant to be a breathing space where we get acquainted with a 
+new operator: **pipe operator**: `%>%`. The pipe operator is a special operator 
+that belongs to the `magrittr` package. The pipe operator is one of the tools that 
+makes it easy to write human-understandable and elegant code, especially when 
+using functions that belong to `dplyr`. The only purpose of the pipe operator 
+is to reduce the intermediate data creation during analysis. It achieves the 
+reduction by automatically turning the output of one line of code into the input 
+of the following piece of code. A linguistic proxy to the pipe operator is the 
+adverb **then**.
+
+Let's see how to use it in an applied manner. If you have successfully completed 
+the last coding task, your output should have looked something similar to the
+code below:
+
+```{r pipe, eval = F, exercise=TRUE, exercise.lines = 33}
+# loading the data
+data("cabinet")
+
+# selecting the needed columns
+cabinet_selected <- select(cabinet, country_name, party_name, year, seats)
+
+# grouping
+cabinet_grouped <- group_by(cabinet_selected, country_name, year)
+
+# mutating the difference between the seats and the average
+cabinet_mutant_first <- mutate(cabinet_grouped, difference = seats - mean(seats))
+
+# mutating the squared difference
+cabinet_mutant <- mutate(cabinet_mutant_first, squared.diff = difference^2)
+cabinet_mutant
+```
+
+In this code, what we want to achieve is the final dataset called `cabinet_mutant` 
+which has two new variables: `difference` and `squared.diff`. Pay attention to
+the fact that each of the intermediary subsets of the data -- `cabinet_selected`,
+`cabinet_grouped` and `cabinet_mutant_first` -- are all used as first arguments 
+for consequent steps. But outside of that, they are needless. In fact, they can
+also be harmful as we engage in creating a lot of subset with somewhat similar 
+names. This can lead to errors, confusion and if you are working with very large 
+datasets, your computer might slow down considerably. 
+
+The pipe operator is useful exactly in these types of situations: it helps us to 
+automatically use the results of one line of code as an input (or first argument)
+of the following piece of code. Let's rewrite the code above with the pipe.
+
+We first start by typing the name of the final data frame we want: `cabinet_mutant`. 
+Secondly, we start by applying the `select()` on the original `cabinet`data. And 
+then we chain each of the consequent tasks - `group_by()` and `mutate()` - with 
+the pipe operator as follows: 
+
+
+```{r pipe1, eval = F, exercise=TRUE, exercise.lines = 33}
+# loading the magrittr library
+library(magrittr)  # %>% operator comes from magrittr
+data("cabinet")
+
+# selecting the needed columns
+cabinet_mutant <- cabinet %>% # take the cabinet data, THEN
+  select(country_name, party_name, year, seats) %>% # select the columns from the cabinet, THEN
+  group_by(country_name, year) %>%                  # group the data, THEN
+  mutate(difference = seats - mean(seats)) %>%       # calculate the difference with mutate, THEN
+  mutate(squared.diff = difference^2)       # calculate the square of difference with mutate
+
+# let's check the created data
+head(cabinet_mutant, n = 25)
+  
+```
+
+
+**Assignment for the pipe operator**
+
+Using the pipe operator, create a subset of the `cabinet` data frame such that 
+(1) only value for France in 2012 are present for (2) the following variables: 
+country_name, year, party_name_english, seats, and left_right. Name the subset 
+data frame `cabinet_FR`.
+
+```{r pipe2, exercise=TRUE, exercise.lines = 23}
+# Create the defined subset with the pipe operator
+data("cabinet")
+
+  
+```
+
+## Topic 8: Import data into R
+Up to this point in this module, you have used datasets provided by us directly 
+to your working environment. When working with data tasks for your classes, 
+however, you will have to import various datasets. *Importing a dataset* means 
+opening a file that contains data with the help of R. 
+
+As you might have guessed, there is a special packages that helps us import data in
+R. In fact, there are two important packages called `readr` and `readxl`. As all 
+the other packages, you can install and *have to load them* as we do in the 
+following snippet. Importantly, the following code has both packages loaded, 
+usually you would not need them both. 
+
+```{r readr, eval = F, exercise=TRUE, exercise.lines = 10}
+# Installing and loading the readr package
+# install.packages("readr")
+library(readr)
+
+# Installing and loading the readxl
+# install.packages("readxl")
+library(readxl)
+  
+```
+
+Now, both of these packages have multiple functions that let us import datasets
+in R. Why do we need multiple packages for doing this? The reason is that datasets
+are stored in different formats. All of you have probably seen datasets in 
+Excel files. It is one way of storing rectangular data. Excel is not the only 
+format, however. In fact, there is a plethora of formats, such as
+**.csv (comma-separated value file)**, **.rds(specific file in which R stores data)**, 
+**.txt(text value file)**, **.xls or .xlsx (excel files)** as well as 
+**.dta (files specific to stata data)**. Collectively, these *data formats* are 
+referred to as extensions. As an example, if you have received the cabinet data in 
+an excel format, the  file would probably have such a name: **cabinet.xlsx**. 
+
+Extensions are important because they signal to different software, such as R,
+Stata or even Microsoft Excel what type of data format they are dealing 
+with. Without such specification, one can ruin the dataset when opening it. 
+That is the reason, for instance, why opening `.csv` files in Microsoft excel 
+leads to problems (especially if you have the European-licensed Microsoft office). 
+**As a rule, do not open your csv files with excel**.
+
+These extensions are also important in the R environment. Unlike most commercial 
+software, R can read all of the data formats correctly if we use the correct
+package and functions. That is the reason why there are different packages for
+reading in data, such as `readr` and `readxl`. Now, we will cover two important 
+functions from `readr` and from `readxl`. Most of data you will be working with 
+will come either in the **.csv** or **.xls** formats. 
+
+## Topic 9: Final thoughts
+
+Updates of R and Rstudio are recommended to be done regularly 
+(RStudio will also remind you that it wants to be updated). Especially when working
+with others, it is important to first check that all team members have the same versions.
+Also, many packages require the most up-to-date version of R.
+
+There are many more things to learn about R, such as lists, merging datasets (e.g. with left_join),
+creating functions, and much more! But you now should have the basic toolkit for
+working with R and learning about these things as you need them.
+
+Congratulations, you are done with this module!
+
+---
