@@ -23,7 +23,7 @@ options(tutorial.storage = list(
 library(learnr)
 library(readr)
 library(tidyverse)
-ess <- read_csv("ESS11e04_2.csv.gz")
+ess <- read_csv("data/ESS11e04_2.csv.gz")
 ```
 
 ## Introduction
@@ -55,7 +55,7 @@ We will look the European Social Survey (ESS) to illustrate various examples of 
 
 ```{r load_data}
 library(readr)
-ess <- read_csv("ESS11e04_2.csv.gz")
+ess <- read_csv("data/ESS11e04_2.csv.gz")
 
 
 
