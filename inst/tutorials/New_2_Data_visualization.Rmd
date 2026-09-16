@@ -1,0 +1,1986 @@
+---
+title: "Part 2 Data Visualization"
+author: "Lea"
+date: "2026-09-01"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.align = "center",
+  out.width = "100%"
+)
+
+options(tutorial.storage = list(
+  save_object = function(...) { },
+  get_object = function(...) NULL,
+  get_objects = function(...) list(),
+  remove_all_objects = function(...) { }
+))
+library(learnr)
+library(readr)
+library(tidyverse)
+ess <- read_csv("ESS11e04_2.csv")
+```
+
+## Introduction
+
+Welcome to Module 2 of the IntroRUzK course. This module will deal with all aspects of data visualization. We will show you the basics of ggplot2, the most common package for plotting things in R. 
+
+This course assumes that you already have basic knowledge of R, especially with regard to the following topics: Data structures (data frames, vectors, ...) and the tidyverse family (select, filter, summarize, ...). If you are not familiar with these topics, please start with or go back to the module "Introduction to R".
+
+Some practical tips: You can repeat this and other modules as often as you like. It is completely allowed (even encouraged) to copy-paste code from this module and adapt to whatever you want to do, don't start from scratch in a new project. If you are stuck trying to get R to do something, check whether someone online has already posted an answer (for example on stackexchange). 
+
+When reading the ESS data, you may see a warning about **parsing issues**:
+
+```text
+One or more parsing issues, call `problems()` on your data frame for details.
+```
+
+A parsing issue occurs when `read_csv()` encounters a value that does not match the data type it expected for a particular column. The data can still be imported, but some values may not have been interpreted exactly as intended.
+
+If you encounter this warning when working with your own data, you can use the `problems()` function to find out which values caused the warning.
+
+
+## Introduction to ggplot2
+
+ggplot is the most common package for visualizations. It is especially useful, because it allows the use to change almost everything about a plot. We will learn about many of these options below, step-by-step. On a basic level, ggplot needs two things from you: data and geoms. Data is commonly added in the shape of a dataset with cases in the rows and variables of interest in the columns. We define which variables we use in the plot using the "aes" command. Then, we add geoms, which control the way the data is shown in the graph. These could be bars in a barplot, points in a scatterplot or words in a scatterplot where you display the names of items directly.
+
+Beyond that, there is a myriad of other options to add to your plot, there are almost limitless ways to customize plots in ggplot2. The most common are to modify the scales used (for example by giving them sensible names) and adding a theme (to make the plot more pleasant to read). 
+
+We will look the European Social Survey (ESS) to illustrate various examples of plots. So, first we load the data with `read_csv()`.
+
+```{r load_data}
+library(readr)
+ess <- read_csv("ESS11e04_2.csv")
+
+
+
+```
+
+## Barplots: Countries in the ESS (European Social Survey) dataset
+
+To get an idea of the dataset, we might be interested in how many respondents there are in each country. One easy way to get this information is to use the `table()` function. Create a table of the countries (variable `cntry`) in the dataset `ess`.
+
+```{r country_table, exercise=TRUE, exercise.lines=6}
+table(ess$cntry)
+```
+
+In a report or paper, we might want to show this information in a plot, which presents the relevant information in a much more concise way. Below, you can see a very simple barplot. As you can see, it only requires the data to be defined (here: `ess`) and a variable (defined using `aes()`, here: `cntry`). The type of plot is defined in the line below: Since we want to create a bar chart, we use `geom_bar()`.
+
+Throughout the module, we will use a wide range of other types of geoms, such as line plots and scatterplots. The plot below shows how often each country occurs in the ESS dataset, that is, how many respondents participated in the survey in each country. Note that `ggplot` calculates the counts that you displayed in the table above automatically.
+
+```{r plot1.1}
+library(tidyverse)
+ggplot(data=ess,aes(y=cntry))+
+  geom_bar()
+```
+
+However, this is still not very clear, as we have to compare the bars to figure out which country has the highest or lowest number of respondents. It would be preferable to have the countries ordered right away. There are several ways of doing this, but the easiest is to use `fct_infreq()` around the variable you want to plot. This automatically orders the countries according to their frequency. We can also reverse the order of the countries using `fct_rev()` so that the country with the largest number of respondents is displayed first.
+
+```{r plot1.2}
+ess %>% 
+  mutate(cntry_rec = fct_rev(fct_infreq(cntry))) %>% 
+  ggplot(aes(y=cntry_rec))+
+  geom_bar()
+```
+
+We now have a plot that gives all the information we need, but it could look much nicer. First, we add the "labs" command to modify the labels of the axes. Note that we add this with the "+" sign after the geom_bar() command to build the plot step-by-step. It is advisable to always start a new line when adding one of these additional commands. In "labs", we can define the name of the x-axis, the y-axis, and, if you want, the title of the plot. Here, we add a nicer description of the variable on the x-axis and leave the y-axis blank, as it should be quite obvious what these categories are. Second, we add the theme "theme_bw()". There are several pre-set themes that are designed to make the plot look nicer in a single command, such as theme_bw() and theme_minimal(). theme_bw() for example changes the background to white and creates a border around the plot. We will get back to making the plots look even nicer towards the end of the module.
+
+```{r plot1.3}
+ess %>% 
+  mutate(cntry_rec = fct_rev(fct_infreq(cntry))) %>% 
+  ggplot(aes(y=cntry_rec))+
+  geom_bar() +
+  labs(x="Number of Respondents",
+       y="")+
+  theme_bw()
+```
+
+We can use the same approach to explore other categorical variables in the dataset. For example, we can look at the distribution of respondents across the different gender categories. The variable `nobingnd` records the respondents' gender identity. By mapping this variable to the x-axis, `geom_bar()` automatically counts how many respondents belong to each category.
+
+```{r plot1.4}
+ggplot(ess, aes(y = nobingnd)) +
+  geom_bar() +
+  labs(
+    y = "Gender",
+    x = "Number of respondents"
+  ) +
+  theme_bw()
+```
+
+The variable `nobingnd` uses numerical codes to represent the different gender categories. For example, `1` represents "A man", `2` represents "A woman", and `3` represents "Other". These numerical codes are useful for storing the data, but they are not very informative when displayed in a plot.
+
+We can use the `factor()` function to replace these numerical codes with meaningful labels. In addition to providing labels, `factor()` allows us to specify the order in which the categories should appear.
+
+The `levels` argument specifies the values used in the original data, while `labels` provides the corresponding labels that should be displayed in the plot. The two arguments therefore work together: the first value in `levels` receives the first label in `labels`, the second receives the second label, and so on.
+
+```{r plot1.5}
+ggplot(ess, aes(
+  y = factor(
+    nobingnd,
+    levels = c(1, 2, 3, 7, 8, 9),
+    labels = c(
+      "A man",
+      "A woman",
+      "Other",
+      "Refusal",
+      "Don't know",
+      "No answer"
+    )
+  )
+)) +
+  geom_bar() +
+  labs(
+    y = "Gender",
+    x = "Number of respondents"
+  ) +
+  theme_bw()
+```
+Instead of writing the `factor()` expression directly inside every plot, we can create a new variable called `gender`. We use `mutate()` to add this new variable to our dataset. The new variable contains the same information as `nobingnd`, but with meaningful labels instead of numerical codes.
+
+```{r plot1.6}
+ess <- ess %>% 
+  mutate(
+    gender = factor(
+      nobingnd,
+      levels = c(1, 2, 3, 7, 8, 9),
+      labels = c(
+        "A man",
+        "A woman",
+        "Other",
+        "Refusal",
+        "Don't know",
+        "No answer"
+      )
+    )
+  )
+ggplot(ess, aes(y = gender)) +
+  geom_bar() +
+  labs(
+    y = "Gender",
+    x = "Number of respondents"
+  ) +
+  theme_bw()
+```
+So far, we have looked at absolute numbers only. However, absolute numbers do not always give us the clearest picture of the composition of a dataset. Instead of looking at how many respondents belong to each category, we can look at the share of respondents belonging to each category.
+
+In `ggplot2`, we can display relative frequencies by dividing the number of observations in each category by the total number of observations (`x = after_stat(count) / sum(after_stat(count))`). Here, `after_stat(count)` refers to the number of observations counted by `geom_bar()` for each category. Dividing this number by the sum of all counts gives us the proportion of respondents in each category.
+
+We then use `scale_x_continuous(labels = percent)` to display these proportions as percentages instead of decimal values. To use the `percent()` function, we first need to load the `scales` package.
+
+```{r plot1.7}
+library(scales)
+
+ggplot(
+  ess,
+  aes(
+    y = gender,
+    x = after_stat(count) / sum(after_stat(count))
+  )
+) +
+  geom_bar() +
+  scale_x_continuous(labels = percent) +
+  labs(
+    x = "Share of Respondents",
+    y = ""
+  ) +
+  theme_bw()
+```
+
+Let’s make these plots look even more appealing. First, we can add color to the plot. This is done very easily by adding the command `“fill=gender”` to the `aes()` line. R then gives each of the genders  a different color, which results in the plot below. We will learn how to make this look even better later, but for now this should suffice.
+
+```{r plot1.8}
+ggplot(
+  ess,
+  aes(
+    y = gender,
+    x = after_stat(count) / sum(after_stat(count)),
+    fill = gender
+  )
+) +
+  geom_bar() +
+  scale_x_continuous(labels = percent) +
+  labs(
+    x = "Share of Respondents",
+    y = "",
+    fill = "Gender"
+  ) +
+  theme_bw()
+```
+A next step is to look at the gender distribution within countries. This is a useful way to display more information at the same time: we can see not only the overall distribution of gender categories, but also how these categories are distributed across different countries.
+
+Since the ESS contains many countries, displaying all of them would make the plot difficult to read. We therefore first restrict the data to a smaller selection of countries using the `filter()` function. The `%in%` operator allows us to keep only observations for which `cntry` matches one of the countries in the specified list.
+
+Instead of mapping `gender` to the x-axis as in the previous plots, we now map `cntry` to the x-axis and use `gender` for the `fill` aesthetic. This allows us to display the gender categories within each country.
+
+Finally, we add `position = "dodge"` to `geom_bar()`. By default, bars for different gender categories would be stacked on top of each other. With `position = "dodge"`, the bars are placed next to each other, making it easier to compare the gender categories within each country.
+
+```{r plot1.9}
+ess %>% 
+  filter(cntry %in% c("AT", "BE", "BG", "CH", "CY", "DE")) %>% 
+  ggplot(aes(
+    y = cntry,
+    fill = gender
+  )) +
+  geom_bar(position = "dodge") +
+  labs(
+    y = "Country",
+    x = "Number of respondents",
+    fill = "Gender"
+  ) +
+  theme_bw()
+```
+We have used a barplot to show the distribution of respondents across gender categories. Now choose a different categorical variable from the ESS dataset and create a barplot showing its distribution.
+
+For example, you could use vote to show whether respondents voted in the last national election (`vote`). You can also choose another categorical variable that interests you. You find the different variables here: https://ess.sikt.no/en/datafile/242aaa39-3bbb-40f5-98bf-bfb1ce53d8ef.
+
+Add appropriate labels to both axes. Then try theme_bw() and experiment with some of the other themes available in ggplot2. You can find an overview of the preset themes here: https://ggplot2.tidyverse.org/reference/ggtheme.html.
+
+```{r excercise_1, exercise=TRUE, exercise.lines = 7}
+
+```
+
+## Quiz 1
+
+We would now like to ask you some questions to recap barplots. 
+
+```{r quiz1, echo=FALSE}
+quiz(
+  question("What is the correct geom in ggplot if you want to plot how often each unique element is in a variable?",
+    answer("geom_bar",correct = TRUE),
+    answer("geom_line"),
+    answer("geom_plot"),
+    answer("geom_unique")
+  ),
+  question("What command orders the levels in a factor according to their frequency?",
+    answer("fct_sort"),
+    answer("factor"),
+    answer("fct_infreq", correct = TRUE),
+    answer("order_factor")
+  )
+)
+```
+
+## Column plots
+
+In the previous chapter, we used `geom_bar()` to count how many observations belonged to each category. Now we want to visualise a **numeric value** rather than a count.
+
+For example, instead of asking how many respondents there are in each country, we might want to compare their **mean life satisfaction**. The variable `stflife` measures how satisfied respondents are with their life as a whole. Respondents are asked:
+
+*"All things considered, how satisfied are you with your life as a whole nowadays?"*
+
+They answer on a scale from **0 (extremely dissatisfied) to 10 (extremely satisfied)**.
+
+To create a column plot, we first need to calculate the mean life satisfaction for each country. We will again focus on a smaller selection of countries. We first group the respondents by country and calculate the mean life satisfaction for each group.
+
+
+```{r plot2.1}
+ess_life <- ess %>%
+  filter(cntry %in% c("AT", "BE", "BG", "CH", "CY", "DE")) %>%
+  group_by(cntry) %>%
+  summarise(
+    mean_stf_life = mean(stflife, na.rm = TRUE)
+  )
+```
+Here, `group_by(cntry)` tells R that we want to perform the calculation separately for each country.
+
+The `summarise()` function then creates a new variable called `mean_stf_life`. We calculate this variable using `mean(stflife)`, which gives us the average life satisfaction of respondents in each country. The argument `na.rm = TRUE` tells R to ignore missing values when calculating the mean.
+
+The result is a new dataset with one row per country and the corresponding mean life satisfaction. We store this dataset as `ess_life` so that we can use it for our plots.
+
+Now that we have calculated the mean life satisfaction for each country, we can use these values to create our column plot.
+
+Unlike `geom_bar()`, `geom_col()` does not count the observations. Instead, it uses the numeric values that we provide. Here, the length of each bar is determined by `mean_stf_life`.
+
+
+```{r plot2.2}
+ggplot(ess_life, aes(x = mean_stf_life, y = cntry)) +
+  geom_col()
+```
+
+Again, we want to make the plot easier to understand. We therefore add appropriate labels to the axes and choose a theme.
+
+We also want to reorder the countries according to their mean life satisfaction. This time, we use the `reorder()` function because we want to reorder one variable (`cntry`) according to the values of another variable (`mean_stf_life`).
+
+We can create a new variable called `countries_ordered` using `mutate()` and then use this variable in `aes()`.
+
+```{r plot2.3}
+ess_life %>% 
+  mutate(
+    countries_ordered = reorder(cntry, mean_stf_life)
+  ) %>% 
+  ggplot(
+    aes(
+      x = mean_stf_life,
+      y = countries_ordered
+    )
+  ) +
+  geom_col() +
+  labs(
+    x = "Mean life satisfaction",
+    y = ""
+  ) +
+  theme_bw()
+```
+
+Finally, we can add a reference line to our plot using `geom_vline()`. The name stands for "vertical line". The `xintercept` argument specifies the position of the line on the x-axis.
+
+Here, we place the line at the mean of the country-level mean life satisfaction values. This gives us a reference point that allows us to see which countries have a mean life satisfaction above or below the average across the selected countries.
+
+We use `lty = "dashed"` to make the line dashed rather than solid. Here, `lty` stands for "linetype".
+
+```{r plot2.4}
+ggplot(
+  ess_life,
+  aes(
+    x = mean_stf_life,
+    y = reorder(cntry, mean_stf_life)
+  )
+) +
+  geom_col() +
+  geom_vline(
+    xintercept = mean(ess_life$mean_stf_life),
+    lty = "dashed"
+  ) +
+  labs(
+    x = "Mean life satisfaction",
+    y = ""
+  ) +
+  theme_bw()
+```
+
+Instead of using bars, we can also create a plot with a point at the mean life satisfaction and a line connecting the point to the x-axis. This type of chart is often called a **"lollipop" chart**.
+
+To create this plot, we combine two geoms: `geom_point()`, which creates the point, and `geom_segment()`, which creates the line.
+
+The `geom_segment()` function needs four coordinates to define the start and end points of the line. The arguments `x` and `y` specify the starting point, while `xend` and `yend` specify the end point.
+
+In our example, we want the lines to be horizontal and start at zero. Therefore, `x = 0` and `xend = mean_life_satisfaction`. We also set `y` and `yend` to `countries_ordered`, so that the line stays at the same height as the corresponding country.
+
+We then add `geom_point()` to place a point at the mean life satisfaction for each country.
+
+```{r plot2.7}
+ess_life %>% 
+  mutate(
+    countries_ordered = reorder(cntry, mean_stf_life)
+  ) %>% 
+  ggplot(aes(
+    x = mean_stf_life,
+    y = countries_ordered
+  )) +
+  geom_segment(
+    aes(
+      x = 0,
+      xend = mean_stf_life,
+      y = countries_ordered,
+      yend = countries_ordered
+    ),
+    color = "grey"
+  ) +
+  geom_point(
+    color = "red",
+    size = 4
+  ) +
+  geom_vline(
+    xintercept = mean(ess_life$mean_stf_life),
+    lty = "dashed"
+  ) +
+  labs(
+    x = "Mean life satisfaction",
+    y = ""
+  ) +
+  theme_bw()
+```
+
+### Now try this yourself
+
+Create a similar lollipop plot using `ctrlife` instead of `stflife`. The variable `ctrlife` measures how much control respondents feel they have over their lives.
+
+Use the same steps as in the example above: calculate the mean value for each country, reorder the countries according to the mean, and create a lollipop plot with a reference line.
+
+You can use the same six countries as before or choose a different selection of countries.
+
+```{r excercise_2, exercise=TRUE, exercise.lines = 7}
+
+```
+
+## Quiz 2
+
+Some questions on column plots:
+
+```{r quiz2, echo=FALSE}
+quiz(
+  question("What is the correct geom in ggplot if you want to plot what values a variable has directly?",
+    answer("geom_bar"),
+    answer("geom_line"),
+    answer("geom_col",correct = TRUE),
+    answer("geom_vals")
+  ),
+  question("What command adds a vertical line to the plot at x-axis position 11?",
+    answer("geom_vline(yintercept=11)"),
+    answer("geom_vline(xintercept=11)", correct = TRUE),
+    answer("geom_hline(yintercept=11)"),
+    answer("geom_hline(xintercept=11)")
+  ),
+  question("Which of the following statements is NOT correct?",
+    answer("We can change how a line looks by adding 'line='dashed' to the command.",correct=TRUE),
+    answer("We can add a horizontal line to a plot for a defined segment using geom_segment."),
+    answer("We can change the color of all points in the graph using color='red'")
+  )
+)
+```
+## Distributions: Histograms and Density Plots
+
+So far, we have used barplots and column plots to explore categorical variables and to compare numerical values across countries. However, many variables in the ESS contain numerical values for a large number of respondents. In these cases, we are often interested in how the values are distributed overall rather than in the value of a particular respondent.
+
+A **histogram** is a useful way to visualise the distribution of a numerical variable. It divides the range of values into intervals, called **bins**, and shows how many observations fall into each interval.
+
+As an example, we can look at `agea`, which measures the age of respondents in years. Before creating the histogram, we need to remove values that do not represent actual ages. In the ESS, the value `999` is used as a special code for missing or non-substantive responses rather than as an actual age. We therefore filter out this value before creating the histogram.
+
+In the histogram below, the x-axis shows the age of respondents, while the y-axis shows the number of respondents in each interval.
+
+
+```{r plot3.1}
+ess %>% 
+  filter(agea >= 0, agea != 999) %>% 
+  ggplot(aes(x = agea)) +
+  geom_histogram() +
+  labs(
+    x = "Age",
+    y = "Number of respondents"
+  ) +
+  theme_bw()
+```
+
+If we do not specify the width or number of bins, `geom_histogram()` automatically chooses a binwidth for us.
+
+We can change this by specifying the `binwidth` argument in `geom_histogram()`. Here, we choose a binwidth of 1, which creates intervals of one year.
+
+This makes the distribution easier to interpret: we can now see how many respondents fall into each one-year age interval.
+
+
+```{r plot3.2}
+ess %>% 
+  filter(agea >= 0, agea != 999) %>% 
+  ggplot(aes(x = agea)) +
+  geom_histogram(binwidth=1) +
+  labs(
+    x = "Age",
+    y = "Number of respondents"
+  ) +
+  theme_bw()
+```
+Instead of bars, we can display the same information as a density distribution using the geom “geom_density”. This doesn’t assume cuts between the bins, but rather displays a smooth density plot over the range of the variable.
+
+```{r plot3.3}
+ess %>% 
+  filter(agea >= 0, agea != 999) %>% 
+  ggplot(aes(x = agea)) +
+  geom_density() +
+  labs(
+    x = "Age",
+    y = "Number of respondents"
+  ) +
+  theme_bw()
+```
+We can plot both pieces of information in one plot, combining the histogram and the density curve. To do this, we need to change the y-axis of the histogram from the number of observations to density. We can do this by setting `y = after_stat(density)` inside the `aes()` of `geom_histogram()`.
+
+This puts the histogram and the density curve on the same scale, making it possible to display them in the same plot.
+
+We also add the argument `alpha = 0.25` to the histogram. This makes the bars more transparent, allowing us to see the density curve more clearly when it is drawn on top of the histogram.
+
+
+```{r plot3.4}
+ess %>% 
+  filter(agea >= 0, agea != 999) %>% 
+  ggplot(aes(x = agea)) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    binwidth = 1,
+    alpha = 0.25
+  ) +
+  geom_density() +
+  labs(
+    x = "Age",
+    y = "Density"
+  ) +
+  theme_bw()
+```
+We can also compare the distribution of a numerical variable across different subgroups using the `ggridges` package. This package provides the `geom_density_ridges()` function, which creates **ridgeline plots**. These plots allow us to display several density distributions on top of each other, making it easier to compare their shapes.
+
+Here, we use the six countries we have already worked with and compare the distribution of respondents' age within each country.
+
+We use `quantile_lines = TRUE` and `quantiles = 2` to add a line marking the median of each distribution. This gives us a simple reference point for comparing the typical age of respondents across countries.
+
+```{r plot.3.5}
+library(ggridges)
+
+ess %>% 
+  filter(
+    cntry %in% c("AT", "BE", "BG", "CH", "CY", "DE"),
+    agea >= 0,
+    agea != 999
+  ) %>% 
+  ggplot(aes(
+    x = agea,
+    y = cntry
+  )) +
+  geom_density_ridges(
+    quantile_lines = TRUE,
+    quantiles = 2
+  ) +
+  labs(
+    x = "Age",
+    y = "Country"
+  ) +
+  theme_bw()
+```
+
+## Quiz 3
+
+Let's recap how we can plot histograms and densities.
+
+```{r quiz3, echo=FALSE}
+quiz(
+  question("What is the best geom in ggplot if you want to plot the overall distribution of a variable using bars?",
+    answer("geom_bar"),
+    answer("geom_histogram",correct = TRUE),
+    answer("geom_density"),
+    answer("geom_distr")
+  ),
+  question("Which type of variable is best displayed as a histogram or density plot?",
+    answer("A nominal variable"),
+    answer("An interval variable", correct = TRUE),
+    answer("A variable with very few observations."),
+    answer("A variable with few distinct categories.")
+  ),
+  question("Which of the following statements is NOT correct?",
+    answer("We can change the number of bars in a histogram using 'binwidth=1'"),
+    answer("We can use geom_density and geom_histogram in the same plot."),
+    answer("The geom_density_ridges geom lines up multiple density distributions from left to right.",correct=TRUE)
+  )
+)
+```
+
+## Boxplots and Violin Plots
+
+In the previous chapter, we used histograms, density plots, and ridgeline plots to visualise the distribution of a numerical variable. Another way of describing a distribution is to summarise it using a small number of key statistics. **Boxplots** are particularly useful for this purpose because they allow us to compare the distributions of a numerical variable across different groups.
+
+A boxplot shows several important features of a distribution at once. The rectangular box extends from the **first quartile** (the 25th percentile) to the **third quartile** (the 75th percentile). The line inside the box represents the **median** (the 50th percentile). Together, the box therefore contains the middle 50% of the observations.
+
+The lines extending from the box are called **whiskers**. By default, they extend to the most extreme observations that are within 1.5 times the interquartile range of the first and third quartiles. Observations beyond the whiskers are shown as individual points and are commonly referred to as **outliers**.
+
+We can use boxplots to compare the age distributions of respondents across countries. This provides a more compact summary than a density or ridgeline plot: instead of showing the entire shape of each distribution, we can focus on its median, the middle 50% of observations, and the spread of the remaining observations.
+
+Boxplots can be created using the `geom_boxplot()` function.
+
+```{r plot4.1}
+ess %>% 
+  filter( 
+    cntry %in% c("AT", "BE", "BG", "CH", "CY", "DE"), 
+    agea >= 0, agea != 999 
+    ) %>% 
+  ggplot(aes( y = cntry, x = agea )) + 
+  geom_boxplot() + 
+  labs( y = "Country", x = "Age" ) + 
+  theme_bw()
+```
+
+One other way to display the same information is through violin plots, added through “geom_violin”. These plots are quite similar to the density plots we saw before, but add some elements of boxplots. For instance, it is straightforward to add quantiles with the option “draw_quantiles = c(0.25, 0.5, 0.75)”, such as seen in the plot below.
+
+```{r plot4.2}
+ess %>% 
+  filter(
+    cntry %in% c("AT", "BE", "BG", "CH", "CY", "DE"), 
+    agea >= 0, 
+    agea != 999
+  ) %>% 
+  ggplot(aes(
+    y = cntry, 
+    x = agea
+  )) + 
+  geom_violin(
+    draw_quantiles = c(0.25, 0.5, 0.75)
+  ) + 
+  labs(
+    y = "Country", 
+    x = "Age"
+  ) + 
+  theme_bw()
+```
+
+## Quiz 4
+
+Let's recap how we can do boxplots and violin plots.
+
+```{r quiz4, echo=FALSE}
+quiz(
+  question("Which of the following is NOT displayed in a default boxplot?",
+    answer("The median of the distribution."),
+    answer("The first and third quartile of the distribution."),
+    answer("The mean of the distribution.",correct = TRUE),
+    answer("Whiskers extending to the edge of the distribution.")
+  ),
+  question("Which of the following statements is NOT correct?",
+    answer("Violin plots are just histograms that also include some elements of boxplots.",correct=TRUE),
+    answer("We can use the command 'draw_quantiles' to add quantiles to a violin plot."),
+    answer("Boxplots can be created for each of the levels of a categorical variable in order to compare their distributions.")
+  )
+)
+```
+
+## Displaying Counts
+
+So far, we have mainly looked at one variable at a time. We can also use `ggplot2` to explore the relationship between two categorical variables.
+
+If we want to display the joint distribution of two categorical variables, we can use `geom_point()`. Here, we compare respondents' gender with whether they voted in the last national election.
+
+Each point represents one respondent. The position of the point is determined by the combination of their gender and voting status. For example, all respondents who are women and voted in the last national election are placed at the same position in the plot.
+
+This means that many points can be placed directly on top of each other. While this shows that there are observations in each category combination, it is difficult to see how many respondents belong to each combination. We will see how to address this problem in the next step.
+
+```{r plot5.1}
+ess %>% 
+  filter(
+    nobingnd %in% c(1, 2, 3),
+    vote %in% c(1, 2, 3)
+  ) %>% 
+  ggplot(aes(
+    x = factor(
+      vote,
+      levels = 1:3,
+      labels = c(
+        "Yes",
+        "No",
+        "Not eligible to vote"
+      )
+    ),
+    y = factor(
+      nobingnd,
+      levels = 1:3,
+      labels = c(
+        "A man",
+        "A woman",
+        "Other"
+      )
+    )
+  )) +
+  geom_point() +
+  labs(
+    x = "Voted in last national election",
+    y = "Gender"
+  ) +
+  theme_bw()
+```
+When using `geom_point()`, all respondents with the same combination of categories are plotted on top of each other. For example, all respondents who are women and voted in the last national election would appear at exactly the same position.
+
+We can use `geom_jitter()` to make the individual observations visible. Instead of plotting all points at exactly the same position, `geom_jitter()` randomly moves each point slightly horizontally and vertically. The degree of jittering is controlled by the `width` and `height` arguments.
+
+This makes it easier to see how many respondents belong to each combination of categories. For example, we can now compare the number of respondents who voted and did not vote across the different gender categories.
+
+```{r plot5.2}
+ess %>% 
+  filter(
+    nobingnd %in% c(1, 2, 3),
+    vote %in% c(1, 2, 3)
+  ) %>% 
+  ggplot(aes(
+    x = factor(
+      vote,
+      levels = 1:3,
+      labels = c(
+        "Yes",
+        "No",
+        "Not eligible to vote"
+      )
+    ),
+    y = factor(
+      nobingnd,
+      levels = 1:3,
+      labels = c(
+        "A man",
+        "A woman",
+        "Other"
+      )
+    )
+  )) +
+  geom_jitter(
+    width = 0.2,
+    height = 0.2
+  ) +
+  labs(
+    x = "Voted in last national election",
+    y = "Gender"
+  ) +
+  theme_bw()
+```
+A more tidy approach to the same data is to use the “geom_count()” geom, which creates one point per combination of categories with sizes increasing by how many cases correspond to each.
+
+```{r plot5.3}
+ess %>% 
+  filter(
+    nobingnd %in% c(1, 2, 3),
+    vote %in% c(1, 2, 3)
+  ) %>% 
+  ggplot(aes(
+    x = factor(
+      vote,
+      levels = 1:3,
+      labels = c(
+        "Yes",
+        "No",
+        "Not eligible to vote"
+      )
+    ),
+    y = factor(
+      nobingnd,
+      levels = 1:3,
+      labels = c(
+        "A man",
+        "A woman",
+        "Other"
+      )
+    )
+  )) +
+  geom_count() +
+  labs(
+    x = "Voted in last national election",
+    y = "Gender"
+  ) +
+  theme_bw()
+```
+
+## Quiz 5
+
+Let's recap how we can plot counts.
+
+```{r quiz5, echo=FALSE}
+quiz(
+  question("What is the geom in ggplot if you want to slightly move the points in a plot to reveal if they lay on top of each other?",
+    answer("geom_jiggle"),
+    answer("geom_jitter",correct = TRUE),
+    answer("geom_move"),
+    answer("geom_point_jitter")
+  ),
+  question("What type of information is commonly plotted using geom_tile?",
+    answer("Counts of observations."),
+    answer("The share of observations that are TRUE"),
+    answer("The colors saved in a categorical variable."),
+    answer("The value of an interval variable for a number of cases.", correct = TRUE)
+  ),
+  question("Which of the following statements is NOT correct?",
+    answer("The geom 'geom_count' will display points with sizes according to the value of the variable."),
+    answer("We can plot the co-occurence of two variables such as country and party family using 'geom_point'."),
+    answer("In geom_tile, red always denotes higher values, while blue denotes lower values.",correct=TRUE)
+  )
+)
+```
+
+## Scatterplots
+
+One of the most common types of plots are **scatterplots**, which are used to display the relationship between two numerical variables. Unlike the categorical variables we used in the previous examples, numerical variables can take many different values. This makes scatterplots useful for identifying patterns, clusters, or possible relationships between two variables.
+
+In this example, we are interested in comparing countries based on their average attitudes towards immigration and gay and lesbian adoption. We calculate one mean value for each country, which allows us to compare countries with each other and gives us two numerical values for each country to plot.
+
+The two variables use different scales. `imwbcnt` measures whether immigrants make the country a worse or better place to live, ranging from **0 ("Worse") to 10 ("Better")**. `hmsacld` measures whether gay male and lesbian couples should have the same rights to adopt children as straight couples, ranging from **1 ("Agree strongly") to 5 ("Disagree strongly")**.
+
+Because the scales have different ranges and meanings, we need to keep this in mind when interpreting the two axes. Each point in the scatterplot represents one country, with its position determined by the two country-level means.
+
+```{r plot6.1}
+ess %>% 
+  filter(
+    imwbcnt %in% 0:10,
+    hmsacld %in% 1:5
+  ) %>% 
+  group_by(cntry) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    mean_adoption = mean(hmsacld, na.rm = TRUE)
+  ) %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = mean_adoption
+  )) +
+  geom_point() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "Mean agreement on equal adoption rights"
+  ) +
+  theme_bw()
+```
+Instead of displaying points only, we can also add labels directly to the scatterplot. This makes it easier to identify which point represents which country.
+
+We can use the `geom_label()` geom to display a label for each point. To do this, we need to specify the variable we want to use as the label in `aes()`, in addition to the x and y positions.
+
+In our example, we use the country code `cntry` as the label. Each point therefore shows the country it represents. This makes it easier to compare the countries and identify their positions in the scatterplot.
+
+For example, countries with a higher mean value on the immigration scale are located further to the right, while countries with a higher mean value on the gay and lesbian adoption scale are located higher up on the plot.
+
+```{r plot6.2}
+ess %>% 
+  filter(
+    imwbcnt %in% 0:10,
+    hmsacld %in% 1:5
+  ) %>% 
+  group_by(cntry) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    mean_adoption = mean(hmsacld, na.rm = TRUE)
+  ) %>% 
+  ggplot(
+    aes(
+      x = mean_immigration,
+      y = mean_adoption,
+      label = cntry
+    )
+  ) +
+  geom_label() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "Mean agreement on equal adoption rights"
+  )+
+  theme_bw()
+```
+Labels can be very useful for identifying observations in a scatterplot. However, when we have more observations, labels can easily overlap and make the plot difficult to read.
+
+We can avoid this problem by using the `geom_label_repel()` function from the **ggrepel** package. Unlike `geom_label()`, `geom_label_repel()` automatically moves the labels apart to reduce overlaps while keeping them connected to their corresponding observations.
+
+We can extend our previous example by also distinguishing respondents by gender. We calculate the mean attitudes towards immigration and gay and lesbian adoption separately for each combination of country and gender. Each label therefore represents one country-gender group.
+
+We use the `color` aesthetic to distinguish the three gender categories. The position of each label is still determined by the two mean attitudes, while the colour indicates the gender of the respondents represented by that point.
+
+```{r plot6.3}
+library(ggrepel)
+
+ess %>% 
+  filter(
+    nobingnd %in% c(1, 2, 3),
+    imwbcnt %in% 0:10,
+    hmsacld %in% 1:5
+  ) %>% 
+  group_by(cntry, nobingnd) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    mean_adoption = mean(hmsacld, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  mutate(
+    gender = factor(
+      nobingnd,
+      levels = 1:3,
+      labels = c("A man", "A woman", "Other")
+    )
+  ) %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = mean_adoption,
+    label = cntry,
+    color = gender
+  )) +
+  geom_label_repel() +
+  geom_point() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "Mean agreement on equal adoption rights",
+    color = "Gender"
+  ) +
+  theme_bw()
+```
+As mentioned before, scatterplots can be used to visualise the relationship between two numerical variables. One way to highlight the overall relationship between the variables is to use the `geom_smooth()` geom. It estimates a smoothed relationship between the two variables and displays it as a line.
+
+We can add `geom_smooth()` on top of `geom_point()` to show both the individual observations and the estimated relationship in the same plot. The shaded area around the line represents the **95% confidence interval** of the estimated relationship.
+
+In our example, each point represents a country-gender group. The plot therefore allows us to see whether there is an overall relationship between the mean attitude towards immigration and the mean attitude towards gay and lesbian adoption across these groups.
+
+As the scales are coded in different directions, it is important to interpret the axes carefully. Higher values on the immigration scale indicate a more positive attitude towards immigration, whereas higher values on the adoption scale indicate stronger disagreement with equal adoption rights for gay and lesbian couples.
+
+The plot suggests that groups with more negative attitudes towards immigration also tend to show stronger disagreement with equal adoption rights for gay and lesbian couples. In other words, a more negative attitude towards immigration is associated with greater rejection of equal adoption rights.
+
+In our example, each point represents a country-gender group. The plot therefore allows us to see whether there is an overall relationship between the mean attitude towards immigration and the mean attitude towards gay and lesbian adoption across these groups.
+
+Although the observations are calculated separately for each gender, `geom_smooth()` estimates **one overall relationship** across all country-gender groups. We can therefore see the general pattern in the data, without estimating separate relationships for men and women and other genders.
+
+
+```{r plot6.4}
+ess %>% 
+  filter(
+    nobingnd %in% c(1, 2, 3),
+    imwbcnt %in% 0:10,
+    hmsacld %in% 1:5
+  ) %>% 
+  group_by(cntry, nobingnd) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    mean_adoption = mean(hmsacld, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = mean_adoption
+  )) +
+  geom_smooth() +
+  geom_point() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "Mean attitude towards equal adoption rights"
+  ) +
+  theme_bw()
+```
+The overall relationship may hide differences between the three gender groups. We can therefore estimate the relationship separately for each gender category.
+
+To do this, we map `gender` to the `color` aesthetic. `ggplot2` then treats the three gender categories as separate groups, and `geom_smooth()` estimates a separate relationship for each group.
+
+This allows us to compare the relationships for **men, women, and other** and to see whether the association between attitudes towards immigration and gay and lesbian adoption differs between the three groups.
+
+```{r plot6.5}
+ess %>% 
+  filter(
+    nobingnd %in% c(1, 2, 3),
+    imwbcnt %in% 0:10,
+    hmsacld %in% 1:5
+  ) %>% 
+  group_by(cntry, nobingnd) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    mean_adoption = mean(hmsacld, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  mutate(
+    gender = factor(
+      nobingnd,
+      levels = 1:3,
+      labels = c("A man", "A woman", "Other")
+    )
+  ) %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = mean_adoption,
+    color = gender
+  )) +
+  geom_smooth() +
+  geom_point() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "Mean attitude towards equal adoption rights",
+    color = "Gender"
+  ) +
+  theme_bw()
+```
+
+The previous plot showed a separate smoothed relationship for each of the three gender categories. We can now make a stronger assumption about the form of these relationships.
+
+The relationships appear to be approximately linear, so we can use a linear model to estimate a straight line for each gender category. We do this by using `method = "lm"` in `geom_smooth()`.
+
+We first look at the relationship for men, followed by women and other.
+
+
+```{r plot6.6}
+ess %>% 
+  filter(
+    nobingnd == 1,
+    imwbcnt %in% 0:10,
+    hmsacld %in% 1:5
+  ) %>% 
+  group_by(cntry) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    mean_adoption = mean(hmsacld, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  mutate(
+    gender = "A man"
+  ) %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = mean_adoption,
+    color = gender
+  )) +
+  geom_smooth(method = "lm") +
+  geom_point() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "Mean attitude towards equal adoption rights",
+    color = "Gender"
+  ) +
+  theme_bw()
+```
+
+We can now add the second gender category, women, to the plot. The observations for men remain visible, and a separate linear model is estimated for women.
+
+Because `gender` is mapped to `color`, `geom_smooth()` fits a separate line for each gender category. This allows us to compare the estimated relationships for men and women directly.
+
+The two lines can differ in their direction and steepness. This shows that the relationship between attitudes towards immigration and gay and lesbian adoption does not necessarily have to be the same across gender groups.
+
+```{r plot6.7}
+ess %>% 
+  filter(
+    nobingnd %in% c(1, 2),
+    imwbcnt %in% 0:10,
+    hmsacld %in% 1:5
+  ) %>% 
+  group_by(cntry, nobingnd) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    mean_adoption = mean(hmsacld, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  mutate(
+    gender = factor(
+      nobingnd,
+      levels = 1:2,
+      labels = c("A man", "A woman")
+    )
+  ) %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = mean_adoption,
+    color = gender
+  )) +
+  geom_smooth(method = "lm") +
+  geom_point() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "Mean attitude towards equal adoption rights",
+    color = "Gender"
+  ) +
+  theme_bw()
+```
+Finally, we add the third gender category, other. We now have separate observations and a separate linear model for each of the three gender groups: men, women, and other.
+
+This allows us to compare the direction and strength of the estimated linear relationships across all three groups. We can see whether the relationship between attitudes towards immigration and gay and lesbian adoption is similar across the groups or whether the groups differ from each other.
+
+The results should be interpreted carefully, especially for the category other, because the number of respondents in this group may be considerably smaller than in the other two groups.
+```{r plot6.8}
+ess %>% 
+  filter(
+    nobingnd %in% c(1, 2, 3),
+    imwbcnt %in% 0:10,
+    hmsacld %in% 1:5
+  ) %>% 
+  group_by(cntry, nobingnd) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    mean_adoption = mean(hmsacld, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  mutate(
+    gender = factor(
+      nobingnd,
+      levels = 1:3,
+      labels = c("A man", "A woman", "Other")
+    )
+  ) %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = mean_adoption,
+    color = gender
+  )) +
+  geom_smooth(method = "lm") +
+  geom_point() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "Mean attitude towards equal adoption righs",
+    color = "Gender"
+  ) +
+  theme_bw()
+```
+
+Try for yourself: Visualize the relationship between the statement "The government should reduce the difference between income levels" (`gincdif`) and "Immigration is good or bad for the country's economy" (`imbgeco`). Again calculate the mean values for each country gender group first.
+```{r excercise_3, exercise=TRUE, exercise.lines = 7}
+
+```
+
+In addition to using colour to distinguish categories, we can also use different shapes. This can be useful when we want to distinguish groups without relying on colour, for example when creating a black-and-white plot.
+
+We can use the `shape` aesthetic to assign a different shape to each gender category. In our example, men, women, and other are therefore represented by different shapes.
+
+There is a limited number of shapes that can be used effectively in a plot. When there are many different categories, it can therefore be useful to focus on a smaller number of groups.
+
+
+```{r plot6.9}
+ess %>% 
+  filter(
+    nobingnd %in% c(1, 2, 3),
+    imwbcnt %in% 0:10,
+    hmsacld %in% 1:5
+  ) %>% 
+  group_by(cntry, nobingnd) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    mean_adoption = mean(hmsacld, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  mutate(
+    gender = factor(
+      nobingnd,
+      levels = 1:3,
+      labels = c("A man", "A woman", "Other")
+    )
+  ) %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = mean_adoption,
+    color = gender,
+    shape = gender
+  )) +
+  geom_point() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "Mean attitude towards equal adoption rights",
+    color = "Gender",
+    shape = "Gender"
+  ) +
+  theme_bw()
+```
+
+One alternative to plotting all country-gender groups separately is to summarise the information before plotting. We can use `group_by()` and `summarise()` to calculate the mean response to each statement separately for each gender category.
+
+We then plot these summarised values and use colour to distinguish the three gender groups. Instead of showing the individual country-gender groups, the plot now contains only one point for each gender category.
+
+This provides a simple overview of where the three gender groups are positioned on the two variables.
+
+```{r plot6.10}
+ess %>% 
+  filter(
+    nobingnd %in% c(1, 2, 3),
+    imwbcnt %in% 0:10,
+    hmsacld %in% 1:5
+  ) %>% 
+  group_by(nobingnd) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    mean_adoption = mean(hmsacld, na.rm = TRUE)
+  ) %>% 
+  mutate(
+    gender = factor(
+      nobingnd,
+      levels = 1:3,
+      labels = c("A man", "A woman", "Other")
+    )
+  ) %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = mean_adoption,
+    color = gender
+  )) +
+  geom_point(size = 4) +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "Mean attitude towards equal adoption rights",
+    color = "Gender"
+  ) +
+  theme_bw()
+```
+While the summarised plot is concise, summarising the data can hide variation within each group. Instead of displaying all groups in the same plot, we can separate them into several smaller plots.
+
+We can do this using `facet_wrap()`. Faceting creates a separate plot for each category of a variable. In our example, we create one plot for each age group using `facet_wrap(~age_group)`.
+
+The axes are kept the same across the different plots by default. This makes it easier to compare the positions of the groups across the age categories.
+
+We can also control the arrangement of the plots using the `nrow` and `ncol` arguments. For example, `nrow = 2` arranges the plots in two rows.
+
+In this example, each point represents a country-gender group, while the different panels show the four age groups separately. This allows us to examine whether the relationship between attitudes towards immigration and gay and lesbian adoption differs across age groups.
+
+```{r plot6.11}
+ess %>% 
+  filter(
+    nobingnd %in% c(1, 2, 3),
+    agea >= 18,
+    imwbcnt %in% 0:10,
+    hmsacld %in% 1:5
+  ) %>% 
+  mutate(
+    gender = factor(
+      nobingnd,
+      levels = 1:3,
+      labels = c("A man", "A woman", "Other")
+    ),
+    age_group = cut(
+      agea,
+      breaks = c(18, 30, 45, 60, Inf),
+      right = FALSE,
+      labels = c("18–29", "30–44", "45–59", "60+")
+    )
+  ) %>% 
+  group_by(cntry, gender, age_group) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    mean_adoption = mean(hmsacld, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = mean_adoption,
+    color = gender
+  )) +
+  geom_point() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "Mean attitude towards equal adoption rights",
+    color = "Gender"
+  ) +
+  theme_bw() +
+  facet_wrap(~age_group, nrow = 2)
+```
+
+## Quiz 6
+
+Let's recap how we can plot counts.
+
+```{r quiz6, echo=FALSE}
+quiz(
+  question("What is the geom in ggplot if you want to directly plot a label?",
+    answer("geom_label",correct = TRUE),
+    answer("geom_sign"),
+    answer("geom_point"),
+    answer("geom_letters")
+  ),
+  question("What happens when we include 'facet_wrap()' in a plot?",
+    answer("The variables in the plot are scaled from zero to one."),
+    answer("The axes of the plot are switched."),
+    answer("We wrap the plot in a nicer theme."),
+    answer("We create subplots for each category in the faceting variable.", correct = TRUE)
+  ),
+  question("Which of the following statements is NOT correct?",
+    answer("We can use geom_label_repel to avoid overlapping labels."),
+    answer("We can plot the co-occurence of two variables such as country and party family using 'geom_point'."),
+    answer("In geom_tile, red always denotes higher values, while blue denotes lower values.",correct=TRUE)
+  )
+)
+```
+
+## Line Plots
+
+If we want to show how the value of a numerical variable changes in relation to another ordered numerical variable, we can use a **line plot**. Line plots are particularly useful for showing changes over time, but they can also be used for other ordered variables.
+
+In the example below, we look at the relationship between respondents' age and their average attitude towards immigration. We first calculate the mean attitude towards immigration for each age. This gives us one numerical value for each age.
+
+We then use `geom_line()` to connect these values in order. The age is shown on the x-axis, while the mean attitude towards immigration is shown on the y-axis.
+
+Because the ages are ordered numerical values, the line allows us to see how the average attitude towards immigration changes across different ages.
+
+```{r plot7.1}
+ess %>% 
+  filter(
+    agea >= 18,
+    agea < 999,
+    imwbcnt %in% 0:10
+  ) %>% 
+  group_by(agea) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(x = agea, y = mean_immigration)) +
+  geom_line() +
+  labs(
+    x = "Age",
+    y = "Mean attitude towards immigration"
+  ) +
+  theme_bw()
+```
+We can also use a line plot to compare several groups at the same time. In our example, we want to compare the average attitude towards immigration across the three gender categories.
+
+To do this, we first calculate the mean attitude towards immigration separately for each combination of gender and age. We then map `gender` to the `color` aesthetic. This tells `ggplot2` to treat the three gender categories as separate groups, so `geom_line()` draws one line for each gender category.
+
+The resulting plot allows us to compare how the average attitude towards immigration changes across age for men, women, and other respondents.
+
+```{r plot7.2}
+ess %>% 
+  filter(
+    nobingnd %in% c(1, 2, 3),
+    agea >= 18,
+    agea <999,
+    imwbcnt %in% 0:10
+  ) %>% 
+  mutate(
+    gender = factor(
+      nobingnd,
+      levels = c(1, 2, 3),
+      labels = c("A man", "A woman", "Other")
+    )
+  ) %>% 
+  group_by(gender, agea) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(
+    x = agea,
+    y = mean_immigration,
+    color = gender
+  )) +
+  geom_line() +
+  labs(
+    x = "Age",
+    y = "Mean attitude towards immigration",
+    color = "Gender"
+  ) +
+  theme_bw()
+``` 
+
+Instead of grouping observations with the “color” command, we can also use the “lty” option, which plots each line with a different linetype. This is useful for producing black-and-white plots.
+
+```{r plot7.3}
+ess %>% 
+  filter(
+    nobingnd %in% c(1, 2, 3),
+    agea >= 18,
+    agea <999,
+    imwbcnt %in% 0:10
+  ) %>% 
+  mutate(
+    gender = factor(
+      nobingnd,
+      levels = c(1, 2, 3),
+      labels = c("A man", "A woman", "Other")
+    )
+  ) %>% 
+  group_by(gender, agea) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(
+    x = agea,
+    y = mean_immigration,
+    lty = gender
+  )) +
+  geom_line() +
+  labs(
+    x = "Age",
+    y = "Mean attitude towards immigration",
+    color = "Gender"
+  ) +
+  theme_bw()
+```
+Try for yourself: Visualize the attitude towards gay and lesbian adoption rights by age. 
+```{r excercise_4, exercise=TRUE, exercise.lines = 7}
+
+```
+
+## Quiz 7
+
+Let's recap how we can plot lines.
+
+```{r quiz7, echo=FALSE}
+quiz(
+  question("Which of the following cannot be used to draw one line per variable value?",
+    answer("color"),
+    answer("lty"),
+    answer("split",correct = TRUE),
+    answer("group")
+  ),
+  question("What does facet_wrap() do?",
+    answer("The variables in the plot are scaled from zero to one."),
+    answer("The axes of the plot are switched."),
+    answer("We wrap the plot in a nicer theme."),
+    answer("We create subplots for each category in the faceting variable.", correct = TRUE)
+  ),
+  question("Which of the following statements is NOT correct?",
+    answer("We can change the scale of the x-axis to show years using 'scale_x_date'"),
+    answer("The geom 'geom_line()' draws a line connecting all points."),
+    answer("The geon 'geom_line()' always draws a timeline from left to right on the x-axis.",correct=TRUE)
+  )
+)
+```
+
+## Global vs Local Mapping
+
+We can overlay different types of information in the same plot. This is useful when we want to show the underlying data while also highlighting a summary or an overall pattern.
+
+We have already used this approach when combining `geom_point()` with `geom_smooth()`. In the example below, we show the mean attitude towards immigration across different ages with points, while `geom_smooth()` highlights the overall pattern.
+
+The important difference is that we now use **global and local mappings**. The `x` and `y` aesthetics are mapped globally inside `ggplot()`, so they apply to both geoms. In contrast, `alpha` is mapped locally inside `geom_point()`, so it only affects the points. Similarly, `color = gender` is mapped locally inside `geom_smooth()`, so the smooth lines are separated by gender.
+
+This allows us to control the appearance of the different layers independently. The points are made more transparent so that they do not clutter the plot, while the smooth lines are coloured according to gender and therefore receive more visual attention.
+
+```{r plot8.1}
+ess %>% 
+  filter(
+    nobingnd %in% c(1, 2, 3),
+    agea >= 18,
+    agea < 999,
+    imwbcnt %in% 0:10
+  ) %>% 
+  mutate(
+    gender = factor(
+      nobingnd,
+      levels = c(1, 2, 3),
+      labels = c("A man", "A woman", "Other")
+    )
+  ) %>% 
+  group_by(cntry, gender, agea) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(
+    x = agea,
+    y = mean_immigration
+  )) +
+  geom_point(alpha = 0.15) +
+  geom_smooth(aes(color = gender)) +
+  labs(
+    x = "Age",
+    y = "Mean attitude towards immigration",
+    color = "Gender"
+  ) +
+  theme_bw()
+```
+
+We can also make a specific group of observations stand out from the rest. To do this, we first create a separate dataset containing only the observations we want to highlight. In our example, we create `ess_women`, which contains the mean attitude towards immigration for women at each age and country.
+
+We then create the plot using all three gender categories as the background data. These points are displayed with a low alpha value so that they appear faded.
+
+In a second `geom_point()` layer, we use the `data` argument to provide the `ess_women` dataset. This adds the observations for women again, but this time with a stronger colour so that they stand out from the background points.
+
+This is another example of local settings in `ggplot2`: the first `geom_point()` displays all observations, while the second `geom_point()` uses a different dataset and appearance to highlight the group we are interested in.
+
+```{r plot8.2}
+ess_women <- ess %>% 
+  filter(
+    nobingnd == 2,
+    agea >= 18,
+    agea < 999,
+    imwbcnt %in% 0:10
+  ) %>% 
+  group_by(cntry, agea) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ess %>% 
+  filter(
+    nobingnd %in% c(1, 2, 3),
+    agea >= 18,
+    agea < 999,
+    imwbcnt %in% 0:10
+  ) %>% 
+  group_by(cntry, nobingnd, agea) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(
+    x = agea,
+    y = mean_immigration
+  )) +
+  geom_point(alpha = 0.15) +
+  geom_point(
+    data = ess_women,
+    aes(x = agea, y = mean_immigration),
+    color = "#CD082C"
+  ) +
+  labs(
+    x = "Age",
+    y = "Mean attitude towards immigration"
+  ) +
+  theme_bw()
+```
+
+We can also make a specific group of observations stand out from the rest. To do this, we first create a separate dataset containing only the observations we want to highlight. In our example, we select six countries: Bulgaria, Cyprus, Spain, Greece, Italy, and Malta. We selected these countries because they are located at or near important entry points to Europe and have been among the countries through which many refugees and migrants have arrived in Europe. And four different age groups: 20, 40, 60, and 80 years. For these observations, we calculate the mean attitude towards immigration for each country and age group.
+
+We then create the plot using all countries as the background data. These points are displayed with a low alpha value so that they appear faded.
+
+In a second `geom_point()` layer, we use the `data` argument to provide the `ess_border` dataset. This adds the selected observations again, but this time with a stronger colour so that they stand out from the background points.
+
+Finally, we use `geom_label_repel()` with the same dataset to add country labels to the highlighted observations. The `ggrepel` package automatically moves the labels apart to reduce overlap and make the plot easier to read.
+
+This approach allows us to show the overall pattern in the data while drawing attention to a smaller number of observations that are particularly relevant for our comparison.
+
+
+```{r plot8.3}
+ess_border <- ess %>% 
+  filter(
+    cntry %in% c("BG", "CY", "ES", "GR", "IT", "MT"),
+    agea %in% c(20, 40, 60, 80),
+    imwbcnt %in% 0:10
+  ) %>% 
+  group_by(cntry, agea) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ess %>% 
+  filter(
+    agea >= 18,
+    agea < 999,
+    imwbcnt %in% 0:10
+  ) %>% 
+  group_by(cntry, agea) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(
+    x = agea,
+    y = mean_immigration
+  )) +
+  geom_point(alpha = 0.15) +
+  geom_point(
+    data = ess_border,
+    aes(x = agea, y = mean_immigration),
+    color = "#CD082C",
+    size = 1.5
+  ) +
+  geom_label_repel(
+    data = ess_border,
+    aes(
+      x = agea,
+      y = mean_immigration,
+      label = cntry
+    ),
+    color = "#CD082C",
+    size = 3
+  ) +
+  labs(
+    x = "Age",
+    y = "Mean attitude towards immigration"
+  ) +
+  theme_bw()
+```
+
+Try for yourself: Visualize attitudes towards equal adoption rights for gay and lesbian couples across different ages. Mark the countries and age groups that you find interesting.
+
+```{r exer_8, exercise=TRUE, exercise.lines = 18}
+
+```
+
+## Maps
+
+One very useful application of `ggplot2` is to visualise data on a map. There are several ways of creating maps in R, and in this example we use the **rworldmap** package, which provides geographical data for countries around the world.
+
+Our goal is to create a map showing the **average attitude towards immigration across European countries**. The variable `imwbcnt` measures the attitude of respondants whether immigrants make the country a worse or better place to live, ranging from **0 ("Worse") to 10 ("Better")**.
+
+First, we load the world map data using the `getMap()` function. This gives us the geographical information needed to draw the countries.
+
+We then calculate the mean attitude towards immigration for each country in the ESS data. Since the ESS uses country codes such as `"DE"` for Germany and `"FR"` for France, we create a new variable called `region` that contains the corresponding country names. These names are needed to match the ESS data with the country names used in the map data.
+
+Next, we select the countries that are available in both datasets and extract the coordinates needed to draw their shapes. We then join these geographical coordinates with the ESS data using the country name.
+
+Finally, we use `geom_polygon()` to draw the countries and map the mean attitude towards immigration to the `fill` aesthetic. The `scale_fill_gradient()` function controls the colour gradient used to represent the different mean values. The resulting map allows us to compare average attitudes towards immigration across countries geographically.
+
+```{r plot9.1}
+library(mapproj)
+library(rworldmap)
+
+library(ggplot2)
+library(dplyr)
+library(maps)
+
+worldMap <- getMap()
+
+europe_immigration <- ess %>% 
+  filter(
+    imwbcnt %in% 0:10
+  ) %>% 
+  group_by(cntry) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  mutate(
+    region = case_when(
+      cntry == "AT" ~ "Austria",
+      cntry == "BE" ~ "Belgium",
+      cntry == "BG" ~ "Bulgaria",
+      cntry == "CH" ~ "Switzerland",
+      cntry == "CY" ~ "Cyprus",
+      cntry == "DE" ~ "Germany",
+      cntry == "EE" ~ "Estonia",
+      cntry == "ES" ~ "Spain",
+      cntry == "FI" ~ "Finland",
+      cntry == "FR" ~ "France",
+      cntry == "GB" ~ "United Kingdom",
+      cntry == "GR" ~ "Greece",
+      cntry == "HR" ~ "Croatia",
+      cntry == "HU" ~ "Hungary",
+      cntry == "IE" ~ "Ireland",
+      cntry == "IL" ~ "Israel",
+      cntry == "IS" ~ "Iceland",
+      cntry == "IT" ~ "Italy",
+      cntry == "LT" ~ "Lithuania",
+      cntry == "LV" ~ "Latvia",
+      cntry == "ME" ~ "Montenegro",
+      cntry == "NL" ~ "Netherlands",
+      cntry == "NO" ~ "Norway",
+      cntry == "PL" ~ "Poland",
+      cntry == "PT" ~ "Portugal",
+      cntry == "RS" ~ "Serbia",
+      cntry == "SE" ~ "Sweden",
+      cntry == "SI" ~ "Slovenia",
+      cntry == "SK" ~ "Slovakia",
+      cntry == "UA" ~ "Ukraine"
+    )
+  ) %>% 
+  filter(!is.na(region))
+
+
+countries <- unique(europe_immigration$region)
+
+indEU <- which(worldMap$NAME %in% countries)
+
+europeCoords <- lapply(indEU, function(i){
+  
+  df <- data.frame(
+    worldMap@polygons[[i]]@Polygons[[1]]@coords
+  )
+  
+  df$region <- as.character(worldMap$NAME[i])
+  
+  colnames(df) <- c("long", "lat", "region")
+  
+  return(df)
+})
+
+europeCoords <- do.call("rbind", europeCoords)
+
+europeCoords %>% 
+  left_join(europe_immigration, by = "region") %>% 
+  ggplot() +
+  geom_polygon(
+    aes(
+      group = region,
+      x = long,
+      y = lat,
+      fill = mean_immigration
+    )
+  ) +
+  expand_limits(
+    x = europeCoords$long,
+    y = europeCoords$lat
+  ) +
+  theme_bw() +
+  scale_fill_gradient(
+    low = "blue",
+    high = "red"
+  ) +
+  coord_map() +
+  labs(
+    fill = "Mean attitude towards immigration"
+  )
+```
+
+
+## Making Things Look Really Nice
+
+As a final step, we want to give some advice to round out plots and make them look even better. There are myriad ways of achieving this and ultimately a large part of plot design is a matter of taste. 
+
+### Axes and Titles
+
+Adding titles and subtitles to plots can make them easier to understand and gives the reader more information about what is being shown. We can add a main title using the `title` argument and an optional subtitle using the `subtitle` argument inside `labs()`.
+
+We can also control the range of an axis. By default, `ggplot2` chooses the axis range based on the values in the data. However, sometimes the variable has a meaningful theoretical range that we want to show explicitly.
+
+In our example, `imwbcnt` ranges from **0 ("Worse") to 10 ("Better")**. Even if the observed country means only cover part of this range, it makes sense to display the complete scale from 0 to 10. We can do this using `xlim()`, where we specify the lower and upper limits of the x-axis.
+
+The plot below therefore shows the mean attitude towards immigration for each country, together with a descriptive title, subtitle, and the full range of the original response scale.
+
+```{r plot10.1}
+ess %>% 
+  filter(
+    imwbcnt %in% 0:10
+  ) %>% 
+  group_by(cntry) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = reorder(cntry, mean_immigration)
+  )) +
+  geom_col() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "",
+    title = "Attitudes towards Immigration",
+    subtitle = "Mean values across ESS countries"
+  ) +
+  theme_bw() +
+  xlim(0, 10)
+```
+
+### Annotation layers
+
+So far, we have controlled the data shown in our plots using different geoms, such as bars, points, and lines. We have also added titles and subtitles to provide additional information about the plot.
+
+We can also add text to a plot that is not part of the dataset itself. This can be useful when we want to highlight or comment on specific observations.
+
+For this purpose, we can use the `annotate()` function. It allows us to add text or labels at a specific position in the plot without adding new variables to our dataset.
+
+In the example below, we use annotations to highlight the countries with the most positive and most negative average attitudes towards immigration. Since the countries are ordered according to their mean values, the country with the lowest mean appears at the bottom and the country with the highest mean appears at the top.
+
+We place the annotations to the right of the bars rather than inside them. This keeps the labels clearly separated from the data and makes the plot easier to read.
+
+```{r plot10.2}
+ess %>% 
+  filter(
+    cntry %in% c("AT", "BE", "BG", "CH", "CY", "DE"),
+    imwbcnt %in% 0:10
+  ) %>% 
+  group_by(cntry) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = reorder(cntry, mean_immigration)
+  )) +
+  geom_col() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "",
+    title = "Attitudes towards Immigration",
+    subtitle = "Mean values across selected ESS countries"
+  ) +
+  scale_x_continuous(
+    limits = c(0, 13),
+    breaks = seq(0, 10, by = 2)
+  ) +
+  annotate(
+    "label",
+    x = 11,
+    y = 1,
+    label = "Most negative"
+  ) +
+  annotate(
+    "label",
+    x = 11,
+    y = 6,
+    label = "Most positive"
+  ) +
+  theme_bw()
+```
+
+### Color scales
+
+So far, we have used the default colour palette provided by `ggplot2`. We can also use other colour palettes to change the appearance of our plots.
+
+One popular option is the **viridis** colour palette, which is available through the `viridis` package. We can use `scale_fill_viridis()` to apply this palette to the `fill` aesthetic.
+
+In our example, `mean_immigration` is a numerical variable. We therefore use a **continuous colour scale**, where the colour changes according to the mean attitude towards immigration. Countries with different mean values are therefore shown in different shades of the same colour palette.
+
+You can find more information about the viridis colour palettes [here](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html).
+```{r plot10.3}
+library(viridis)
+
+ess %>% 
+  filter(
+    cntry %in% c("AT", "BE", "BG", "CH", "CY", "DE"),
+    imwbcnt %in% 0:10
+  ) %>% 
+  group_by(cntry) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = reorder(cntry, mean_immigration),
+    fill = mean_immigration
+  )) +
+  geom_col() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "",
+    title = "Attitudes towards Immigration",
+    subtitle = "Mean values across selected ESS countries",
+    fill = "Mean attitude"
+  ) +
+  scale_fill_viridis() +
+  theme_bw() +
+  xlim(0, 10)
+```
+
+### Manual color scales
+
+So far, we have used predefined colour palettes to control the appearance of our plots. However, we can also define the colours ourselves. This is useful when we want to assign specific colours to particular categories.
+
+In the example below, we assign a different colour to each country. To do this, we add a new variable called `color` to our dataset. Using `case_when()`, we assign a colour code to each country.
+
+We then map `color` to the `fill` aesthetic. Since the values in `color` are already valid colour codes, we can use `scale_fill_identity()` to tell `ggplot2` to use these values directly as colours.
+
+Because the countries are already identified by their names on the y-axis, we do not need a separate legend for the colours. `scale_fill_identity()` therefore also allows us to use our manually specified colours without creating an additional colour scale.
+
+```{r plot10.4}
+ess_means <- ess %>% 
+  filter(
+    cntry %in% c("AT", "DE", "ES", "FR", "GB",
+                 "GR", "HU", "IT", "SE", "UA"),
+    imwbcnt %in% 0:10
+  ) %>% 
+  group_by(cntry) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  mutate(
+    color = case_when(
+      cntry == "AT" ~ "#E41A1C",
+      cntry == "DE" ~ "#377EB8",
+      cntry == "ES" ~ "#4DAF4A",
+      cntry == "FR" ~ "#984EA3",
+      cntry == "GB" ~ "#FF7F00",
+      cntry == "GR" ~ "#FFFF33",
+      cntry == "HU" ~ "#A65628",
+      cntry == "IT" ~ "#F781BF",
+      cntry == "SE" ~ "#999999",
+      cntry == "UA" ~ "#66C2A5"
+    ),
+    cntry = reorder(cntry, mean_immigration)
+  )
+
+ess_means %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = cntry,
+    fill = color
+  )) +
+  geom_col() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "",
+    title = "Attitudes towards Immigration",
+    subtitle = "Selected ESS countries"
+  ) +
+  theme_bw() +
+  coord_cartesian(xlim = c(0, 10)) +
+  scale_fill_identity()
+```
+
+### Moving and layouting legends
+
+When we map a variable to an aesthetic such as `fill` or `color`, `ggplot2` automatically creates a legend. By default, this legend is usually placed to the right of the plot.
+
+We can change the position of the legend using the `legend.position` argument inside `theme()`. For example, `legend.position = "bottom"` moves the legend below the plot. We can also place the legend on the `"left"` or `"top"` of the plot.
+
+Sometimes a legend is not necessary. In that case, we can remove it completely by setting `legend.position = "none"`.
+
+In the example below, we create a new variable called `EU` that distinguishes between EU and non-EU countries. We then map this variable to the `fill` aesthetic and use `scale_fill_viridis_d()` to apply the viridis colour palette to the two categories.
+
+Finally, we move the automatically generated legend from the right side to the bottom of the plot using `legend.position = "bottom"`.
+
+```{r plot10.5}
+ess_means <- ess %>% 
+  filter(
+    imwbcnt %in% 0:10
+  ) %>% 
+  group_by(cntry) %>% 
+  summarise(
+    mean_immigration = mean(imwbcnt, na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  mutate(
+    EU = ifelse(
+      cntry %in% c(
+        "AT", "BE", "BG", "HR", "CY", "CZ", "DE", "EE",
+        "ES", "FI", "FR", "GR", "HU", "IE", "IT", "LT",
+        "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE",
+        "SI", "SK"
+      ),
+      "EU",
+      "Non-EU"
+    )
+  )
+
+ess_means %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = reorder(cntry, mean_immigration),
+    fill = EU
+  )) +
+  geom_col() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "",
+    title = "Attitudes towards Immigration",
+    subtitle = "Mean values across ESS countries",
+    fill = "EU membership"
+  ) +
+  theme_bw() +
+  scale_fill_viridis_d() +
+  theme(
+    legend.position = "bottom"
+  )
+
+```
+
+### Removing the legend title
+
+We can also remove the title of the legend if it is not needed. By default, `ggplot2` uses the name of the variable mapped to `fill` as the legend title. In our example, this would be `EU`.
+
+We can remove this title by adding `legend.title = element_blank()` to `theme()`.
+
+This is useful when the categories in the legend are already self-explanatory. In our example, the categories **"EU"** and **"Non-EU"** are easy to understand without an additional heading.
+
+We should only remove the legend title when the categories are clear on their own. If the meaning of the categories is not obvious, keeping the legend title can make the plot easier to understand.
+
+```{r plot10.6}
+ess_means %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = reorder(cntry, mean_immigration),
+    fill = EU
+  )) +
+  geom_col() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "",
+    title = "Attitudes towards Immigration",
+    subtitle = "Mean values across ESS countries"
+  ) +
+  theme_bw() +
+  scale_fill_viridis_d() +
+  theme(
+    legend.position = "bottom",
+    legend.title = element_blank()
+  )
+```
+
+The `theme()` command provides many other options for customising individual elements of a plot. Which settings we use often comes down to personal preference and the purpose of the plot.
+
+In the example below, we make several changes to illustrate some of these options. We increase the size of the x-axis title using `axis.title.x = element_text(size = 14)`. We also make the country names on the y-axis bold and tilt them slightly using `axis.text.y = element_text(face = "bold", angle = 10)`.
+
+Finally, we make the main title bold using `plot.title = element_text(face = "bold")`.
+
+These settings can be combined to customise different parts of a plot. However, it is usually better to use formatting sparingly and choose settings that improve readability rather than adding unnecessary decoration.
+
+```{r plot 10.7}
+ess_means %>% 
+  ggplot(aes(
+    x = mean_immigration,
+    y = reorder(cntry, mean_immigration),
+    fill = mean_immigration
+  )) +
+  geom_col() +
+  labs(
+    x = "Mean attitude towards immigration",
+    y = "",
+    title = "Attitudes towards Immigration",
+    subtitle = "Mean values across selected ESS countries",
+    fill = "Mean attitude"
+  ) +
+  scale_fill_viridis_c() +
+  coord_cartesian(xlim = c(0, 10)) +
+  theme_bw() +
+  theme(
+    axis.title.x = element_text(size = 14),
+    axis.text.y = element_text(face = "bold", angle = 10),
+    plot.title = element_text(face = "bold")
+  )
+```
+
+## Final Words
+
+That's it, you made it through module 2 of the IntroRUzK course. Congratulations! Please submit yur answers in the form below to get this course credited towards the certificate. If you want to come back to this course, you can just restart it or navigate back in the menu on the left. Remember, it is less about knowing it all by heart, but rather knowing where to find the information. It is totally fine to come back to this course to copy-paste some command if you need it!
+
+We hope you enjoyed the course and learned something in the process.
