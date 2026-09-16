@@ -34,17 +34,6 @@ This course assumes that you already have basic knowledge of R, especially with 
 
 Some practical tips: You can repeat this and other modules as often as you like. It is completely allowed (even encouraged) to copy-paste code from this module and adapt to whatever you want to do, don't start from scratch in a new project. If you are stuck trying to get R to do something, check whether someone online has already posted an answer (for example on stackexchange). 
 
-When reading the ESS data, you may see a warning about **parsing issues**:
-
-```text
-One or more parsing issues, call `problems()` on your data frame for details.
-```
-
-A parsing issue occurs when `read_csv()` encounters a value that does not match the data type it expected for a particular column. The data can still be imported, but some values may not have been interpreted exactly as intended.
-
-If you encounter this warning when working with your own data, you can use the `problems()` function to find out which values caused the warning.
-
-
 ## Introduction to ggplot2
 
 ggplot is the most common package for visualizations. It is especially useful, because it allows the use to change almost everything about a plot. We will learn about many of these options below, step-by-step. On a basic level, ggplot needs two things from you: data and geoms. Data is commonly added in the shape of a dataset with cases in the rows and variables of interest in the columns. We define which variables we use in the plot using the "aes" command. Then, we add geoms, which control the way the data is shown in the graph. These could be bars in a barplot, points in a scatterplot or words in a scatterplot where you display the names of items directly.
@@ -60,7 +49,15 @@ ess <- read_csv("data/ESS11e04_2.csv.gz")
 
 
 ```
+When reading the ESS data, you may see a warning about **parsing issues**:
 
+```text
+One or more parsing issues, call `problems()` on your data frame for details.
+```
+
+A parsing issue occurs when `read_csv()` encounters a value that does not match the data type it expected for a particular column. The data can still be imported, but some values may not have been interpreted exactly as intended.
+
+If you encounter this warning when working with your own data, you can use the `problems()` function to find out which values caused the warning.
 ## Barplots: Countries in the ESS (European Social Survey) dataset
 
 To get an idea of the dataset, we might be interested in how many respondents there are in each country. One easy way to get this information is to use the `table()` function. Create a table of the countries (variable `cntry`) in the dataset `ess`.
