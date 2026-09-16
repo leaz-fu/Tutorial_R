@@ -1,0 +1,28 @@
+Package: Tutorial_R
+Type: Package
+Title: R Tutorials for Political Science
+Version: 0.1.0
+Authors@R: person("Lea", "Fu", role = c("aut", "cre"))
+Description: The package contains tutorials for learning R in political science.
+License: MIT
+Encoding: UTF-8
+LazyData: true
+URL: https://github.com/leaz-fu/Tutorial_R
+BugReports: https://github.com/leaz-fu/Tutorial_R/issues
+Imports:
+learnr,
+gerda,
+ggplot2,
+dplyr,
+tidyr,
+magrittr,
+readr,
+readxl,
+tidyverse,
+scales,
+ggridges,
+ggrepel,
+mapproj,
+rworldmap,
+maps,
+viridis
