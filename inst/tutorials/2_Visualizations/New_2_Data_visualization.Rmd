@@ -23,7 +23,7 @@ options(tutorial.storage = list(
 library(learnr)
 library(readr)
 library(tidyverse)
-ess <- read_csv("ESS11e04_2.csv")
+ess <- read_csv("ESS11e04_2.csv.gz")
 ```
 
 ## Introduction
