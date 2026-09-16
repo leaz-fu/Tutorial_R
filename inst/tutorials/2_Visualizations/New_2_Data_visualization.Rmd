@@ -73,11 +73,6 @@ In a report or paper, we might want to show this information in a plot, which pr
 
 Throughout the module, we will use a wide range of other types of geoms, such as line plots and scatterplots. The plot below shows how often each country occurs in the ESS dataset, that is, how many respondents participated in the survey in each country. Note that `ggplot` calculates the counts that you displayed in the table above automatically.
 
-```{r test}
-print("cntry" %in% names(ess))
-print(head(ess$cntry))
-```
-
 ```{r plot1.1}
 library(tidyverse)
 ggplot(data=ess,aes(y=cntry))+
