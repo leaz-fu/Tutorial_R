@@ -1,8 +1,8 @@
-Package: Tutorial_R
+Package: TutorialR
 Type: Package
 Title: R Tutorials for Political Science
 Version: 0.1.0
-Authors@R: person("Lea", "Fu", role = c("aut", "cre"))
+Authors@R: person("Lea", "Fu", email = "leaz98@zedat.fu-berlin.de", role = c("aut", "cre"))
 Description: The package contains tutorials for learning R in political science.
 License: MIT
 Encoding: UTF-8
