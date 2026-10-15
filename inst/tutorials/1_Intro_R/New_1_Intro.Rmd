@@ -448,7 +448,7 @@ elections_months
 Lastly, using the same function, we can create logical vectors. For example, let us indicate whether the selected German federal states have a **Landtag**. `TRUE` indicates that a federal state has a Landtag, while `FALSE` indicates that it does not.
   
 
-```{r logical_vector, exercise=TRUE, exercise.lines = 5}
+```{r logical_vector, exercise=TRUE, exercise.lines = 8}
 # Creating a logical vector
 is_landtag <- c(
   TRUE,   # Baden-Württemberg
@@ -462,8 +462,7 @@ is_landtag
 
 ```
 
-**Naming Vectors**
-We can also name vectors in R. When naming a vector, we assign a ## Naming Vectors
+### Naming Vectors
 
 We can also name vectors in R. When naming a vector, we assign a name to each element of the vector. This can be done with the `names()` function.
 
