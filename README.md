@@ -1,6 +1,6 @@
 # Tutorial_R
 
-Welcome to the R Tutorial **TutorialR**. This package contains self-learning R tutorials developed for students in political science.
+Welcome to the R Tutorial **TutorialR**. This package contains self-learning R tutorials developed for students in social science.
 
 The aim of the package is to teach R to students with self-learning modules, so they can go through the material on their own computer at their own pace.
 
