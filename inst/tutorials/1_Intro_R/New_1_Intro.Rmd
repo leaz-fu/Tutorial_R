@@ -491,7 +491,7 @@ is_landtag
 As you can see in the output, each month is now associated with the corresponding federal state. This makes it easier to see when each state held its election.
 As you can see in the printout, the vector `is_landtag` now has a federal state name for each of its values. This makes it easier to see which `TRUE` or `FALSE` value belongs to which federal state.
 
-### Exercise: Naming a Numeric Vector
+**Exercise: Naming a Numeric Vector**
 
 We can also assign names to the elements of a numeric vector. In the following exercise, use the `federal_states` vector to name the elements of the `elections_months` vector. This allows us to see in which month each federal state held its election.
 
@@ -563,6 +563,33 @@ is_landtag["Baden-Württemberg"]
 is_landtag["Berlin"]
 
 ```
+**Exercise: Selecting Values by Name**
+
+In the previous exercise, you assigned the names of the German federal states to the `elections_months` vector. Now, use this named vector to find out in which month the elections take place in **Baden-Württemberg** and **Berlin**.
+
+Complete the code below by selecting the values for these two federal states by name.
+
+```{r selecting_months_by_name, exercise=TRUE, exercise.lines = 11}
+# Vector of German federal states
+federal_states <- c(
+  "Baden-Württemberg",
+  "Rheinland-Pfalz",
+  "Sachsen-Anhalt",
+  "Berlin",
+  "Mecklenburg-Vorpommern"
+)
+
+# Vector indicating the election months
+elections_months <- c(3, 3, 9, 9, 9)
+
+# Naming the elections_months vector
+names(elections_months) <- federal_states
+
+# Select the election month for Baden-Württemberg
+
+
+# Select the election month for Berlin
+``` 
 
 ## Topic 4.3: Data frames
 Using only vectors to run complex analysis is inefficient. Thus, most of your 
