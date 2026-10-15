@@ -1,5 +1,5 @@
 ---
-title: 
+title: "Introduction to R"
 author: 
 output: learnr::tutorial
 runtime: shiny_prerendered
@@ -69,7 +69,7 @@ operators. Each of them allows to conduct simple arithmetic tasks such as adding
 
 For an example, press "Run code" below:
 
-```{r modulo, exercise=TRUE, exercise.lines = 1}
+```{r modulo, exercise=TRUE, exercise.lines = 3}
 # Division
 7 / 5
 
@@ -130,25 +130,29 @@ because 5 is **not** less than 4:
 Replace the alphabetic placeholders `a` and `b` below with numbers of your
 choice and exercise using logical operators.
 
-```{r l_operators, eval = F, exercise=TRUE, exercise.lines = 18}
-# Less than
-a < b
-
+```{r l_operators, eval = F, exercise=TRUE, exercise.lines = 4}
 # More than
 a > b
+```
 
+```{r l_operators_2, eval = F, exercise=TRUE, exercise.lines = 4}
 # Less than or equal
 a <= b
+```
 
+```{r l_operators_3, eval = F, exercise=TRUE, exercise.lines = 4}
 # More than or equal
 a >= b
+```
 
+```{r l_operators_4, eval = F, exercise=TRUE, exercise.lines = 4}
 # Equal
 a == b
+```
 
+```{r l_operators_5, eval = F, exercise=TRUE, exercise.lines = 4}
 # Not equal
 a != b
-
 ```
 
 ## Topic 2.3: Assignment operators
@@ -259,7 +263,7 @@ sum(1, 2)
 ```
 
 The function adds any number of digits and returns the result of the summation 
-action. In the script below, you can replace the alphabetic placeholders with 
+action. In the script below, you can replace the alphabetic placeholders `a`, `b`, `c` with 
 actual numbers of your own choice:
 
 ```{r sum_func_1, eval = F, exercise=TRUE, exercise.lines = 3}
@@ -361,12 +365,12 @@ one assigns textual data to an object with the help of quotation marks.
 Quotation marks are the syntax that makes it clear to R that what comes in them 
 is textual information.
 
-For example, let us save the name of the current UN Secretary General in R:
+For example, let us save the name of the current Nobel Peace Prize laureate in R:
 
 ```{r strings, exercise=TRUE, exercise.lines = 3}
-UN_Gen_Sec = "António Guterres"
+nobel_peace_laureate = "Navanethem Pillay "
 
-UN_Gen_Sec
+nobel_peace_laureate
 
 ```
 
@@ -484,7 +488,16 @@ names(is_landtag) <- federal_states
 is_landtag
 ```
 
+As you can see in the output, each month is now associated with the corresponding federal state. This makes it easier to see when each state held its election.
 As you can see in the printout, the vector `is_landtag` now has a federal state name for each of its values. This makes it easier to see which `TRUE` or `FALSE` value belongs to which federal state.
+
+### Exercise: Naming a Numeric Vector
+
+We can also assign names to the elements of a numeric vector. In the following exercise, use the `federal_states` vector to name the elements of the `elections_months` vector. This allows us to see in which month each federal state held its election.
+
+```{r naming_numeric_vector, exercise=TRUE, exercise.lines = 11}
+
+```
 
 ### Vector selection
 
@@ -851,18 +864,16 @@ data("cabinet")
 
 ```
 
-An intermission quiz. We have a data frame called `data`. Which of the
-selection grammar correct?
+An intermission quiz. We have a data frame called `data`. We want to select the value in the **5th column and 10th row**. Which of the following expressions is correct?
 
 ```{r quiz_intermission, echo=FALSE}
 quiz(
-  question("Which of the following selection methods is correct?",
-    answer("data['row number', 'column number']"),
-    answer("data['column number', 'row number']"),
-    answer("data[row number, column number]", correct = TRUE),
-    answer("data['column name', 'row name']"),
-    answer("data['row name', 'column name']", correct = TRUE),
-    answer("data[data$column, data$row]")
+  question("Which of the following expressions selects the value in the 5th column and 10th row?",
+    answer("data[5, 10]"),
+    answer("data[10, 5]", correct = TRUE),
+    answer("data['5', '10']"),
+    answer("data[10:5]"),
+    answer("data[5][10]")
   ))
 ```
 
@@ -883,6 +894,8 @@ data("cabinet")
 # replacing a sequence of values in a column
 cabinet$seats[c(1:5)] <- 13
 
+# print the first 5 lines
+print(cabinet[1:5, ])
 ```
 
 Now, let's imagine that the values for 1st and 5th rows of the seats column 
@@ -893,6 +906,8 @@ data("cabinet")
 #replacing the 1st and 5th row values
 cabinet$seats[c(1,5)] <- 10
 
+# print the first 5 lines
+print(cabinet[1:5, ])
 ```
 
 In the following snippet, (1) replace the values in rows 9-15 of the column 
