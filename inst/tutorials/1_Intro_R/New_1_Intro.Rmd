@@ -70,6 +70,7 @@ operators. Each of them allows to conduct simple arithmetic tasks such as adding
 For an example, press "Run code" below:
 
 ```{r modulo, exercise=TRUE, exercise.lines = 1}
+# Division
 7 / 5
 
 ```
@@ -78,25 +79,29 @@ For an example, press "Run code" below:
 #### Exercises for arithmetic operators
 Replace the alphabetic placeholders `a` and `b` below with numbers of your choice.
 
-```{r a_operators, eval = F, exercise=TRUE, exercise.lines = 18}
-# Division
-a/b
-
+```{r a_operators, eval = F, exercise=TRUE, exercise.lines = 4}
 # Multiplication
 a*b
+```
 
+```{r b_operators, eval = F, exercise=TRUE, exercise.lines = 4}
 # Subtraction
 a-b
+```
 
+```{r c_operators, eval = F, exercise=TRUE, exercise.lines = 4}
 # Addition
 a+b
+```
 
+```{r d_operators, eval = F, exercise=TRUE, exercise.lines = 4}
 # Exponentiation
 a^b
+```
 
+```{r e_operators, eval = F, exercise=TRUE, exercise.lines = 4}
 # Modulo
 a %% b
-
 ```
 
 ## Topic 2.2: Logical operators
