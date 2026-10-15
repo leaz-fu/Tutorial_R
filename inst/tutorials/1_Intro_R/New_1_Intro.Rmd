@@ -916,7 +916,7 @@ and then we select the sequence of values and then assign the proper value to
 the selection. Here is how we can replace it:
 
 
-```{r df_ai1, exercise=TRUE, exercise.lines = 4}
+```{r df_ai1, exercise=TRUE, exercise.lines = 6}
 data("cabinet")
 # replacing a sequence of values in a column
 cabinet$seats[c(1:5)] <- 13
@@ -928,7 +928,7 @@ print(cabinet[1:5, ])
 Now, let's imagine that the values for 1st and 5th rows of the seats column 
 needs to be replaced by 10. We can use the same logic as above to do so:
 
-```{r df_ai2, exercise=TRUE, exercise.lines = 4}
+```{r df_ai2, exercise=TRUE, exercise.lines = 6}
 data("cabinet")
 #replacing the 1st and 5th row values
 cabinet$seats[c(1,5)] <- 10
