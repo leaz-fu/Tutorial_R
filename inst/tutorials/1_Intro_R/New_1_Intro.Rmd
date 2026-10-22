@@ -65,7 +65,7 @@ operators. Each of them allows to conduct simple arithmetic tasks such as adding
 3. Multiplication: `*`
 4. Division: `/`
 5. Exponentiation: `^`
-6. Modulo (Division with remainder): `%`
+6. Modulo (Division with remainder): `%%`
 
 For an example, press "Run code" below:
 
@@ -164,7 +164,7 @@ An assignment operator is a special type of verb. It is akin to the verb
 
 Both are used to assign a name to a value or a set of values. However, in practice you should **almost always** use `<-`.
 
-With the following code, we tell R that we want to save the number 1791 under the name `start_of_haitian_revolution`:
+The following example is deliberately simple: we assign the year 1791 to an object called `start_of_haitian_revolution`. In practice, assigning values to objects can be useful when working with large datasets or creating visualizations. For example, if you want to create graphs showing two historical events, you can store their start dates in separate objects and easily change these dates later without having to search for and modify every occurrence of the value in your code.
 
 ```r
 start_of_haitian_revolution <- 1791
@@ -176,14 +176,11 @@ The name and the number are stored together in the R environment, which can be u
 
 Once you have created an object, you can print its value on the screen by typing `start_of_haitian_revolution` in the R console.
 
-By default, you do not see any
-output in the console when creating a new object. If the command works, nothing
-happens in the console and you will only notice that a new object has been 
-added to the R environment.
+By default, creating a new object does not produce any output in the console. If the command runs successfully, you will see that a new object has been added to the R environment.
 
-Here is an example. You can run the code and then type `start_of_haitian_revolution` in the 
-chunk and execute this line to see that you created this object (put the cursor 
-somewhere in the third line and hit Command+Enter on your keyboard).
+Here is an example. Click the “Run the Code” button to execute the code chunk. The first line creates an object called `start_of_haitian_revolution` and assigns it the value `1791`. The second line displays the object's value as output.
+
+**Note on exercise chunks:** You must run the entire code chunk by clicking the “Run the Code” button. Unlike in RStudio, you cannot execute individual lines of code here.
 
 ```{r start-HT, exercise=TRUE, exercise.lines = 4}
 start_of_haitian_revolution <- 1791
