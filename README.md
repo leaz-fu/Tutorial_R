@@ -12,7 +12,7 @@ There are quizzes and coding exercises included in the tutorials, which will be 
 
 To start the course, please follow these steps:
 
-1. **Download R** (https://cran.r-project.org/) and install it. Get the newest version that fits your operating system. You don't have to ever open R, just download it.
+1. **Download R** (https://cran.r-project.org/) and install it. Get the newest version that fits your operating system. You don't have to ever open R, just download it. **If you already have R installed, make sure you are using the latest version. If not, update it. Otherwise, the tutorial will not run.**
 
 2. **Download RStudio** (https://posit.co/download/rstudio-desktop/) and install it. Again, get the newest version that fits your operating system.
 
